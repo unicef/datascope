@@ -6,7 +6,7 @@ var InterfaceMixin = require('../InterfaceMixin');
 var isColumnResizing;
 
 var DataTable = React.createClass({
-    mixins: [InterfaceMixin('DatascopeTable')],
+    mixins: [InterfaceMixin('DatascopeSort')],
     propTypes: {
         // data displayed on the table
         data: React.PropTypes.array.isRequired,

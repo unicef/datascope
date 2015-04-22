@@ -35,13 +35,20 @@ var LocalDatascope = React.createClass({
             return (b[key] - a[key]) * order;
         })
     },
+    _filterData(data, filterQuery) {
+        return _.filter(data, d => {
+            return _.all(filterQuery, (filterObj, key) => matchesFilter(d, filterObj, key));
+        })
+    },
 
     onChangeQuery(query) {
         console.log('new query', query);
         var displayData = _.clone(this.props.data);
-        var hasSearch = _.isObject(query.search) && _.keys(query.search).length,
+        var hasFilter = _.isObject(query.filter) && _.keys(query.filter).length,
+            hasSearch = _.isObject(query.search) && _.keys(query.search).length,
             hasSort = query.sort && !_.isUndefined(query.sort.key);
 
+        displayData = hasFilter ? this._filterData(displayData, query.filter) : displayData;
         displayData = hasSearch ? this._searchData(displayData, query.search) : displayData;
         displayData = hasSort ? this._sortData(displayData, query.sort) : displayData;
 
@@ -60,5 +67,18 @@ var LocalDatascope = React.createClass({
         </div>
     }
 });
+
+function matchesFilter(objToTest, filter, key) {
+    // matcher for our filter query language
+    if(!filter) return true;
+    var value = objToTest[key];
+    if('eq' in filter) return value === filter.eq;
+    if(_.isArray(filter.in)) return filter.in.indexOf(value) >= 0;
+    if(_.isNumber(filter.gt) || _.isNumber(filter.lt)) {
+        return ('gt' in filter ? value >= filter.gt : true) &&
+            ('lt' in filter ? value <= filter.lt : true);
+    }
+    return true;
+}
 
 module.exports = LocalDatascope;

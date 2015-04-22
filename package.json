@@ -4,7 +4,6 @@
   "author": "Dan Delany <dan.delany@gmail.com>",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {},
   "devDependencies": {
     "babel": "^5.0.9",
     "babel-core": "^5.0.9",

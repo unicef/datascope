@@ -26,7 +26,6 @@ var ValueTypes = mirrorObj([
     'datetime', // how to format... moment.js?
     'list', // list of objects or values?
 
-
     'string',
     'number',
     'integer',

@@ -65,7 +65,7 @@ var Datascope = React.createClass({
                     propsToPass.value = searchValue;
                 }
 
-                if(childImplements('DatascopeTable')) {
+                if(childImplements('DatascopeSort')) {
                     propsToPass.sortKey = query.sort ? query.sort.key : null;
                     propsToPass.sortOrder = query.sort ? query.sort.order : null;
                     propsToPass.onChangeSort = this.onChangeSort;

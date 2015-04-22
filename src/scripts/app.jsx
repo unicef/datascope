@@ -6,6 +6,7 @@ var Datascope = require('./components/Datascope.jsx');
 var LocalDatascope = require('./components/LocalDatascope.jsx');
 var SearchBar = require('./components/SearchBar.jsx');
 var FilterPanel = require('./components/FilterPanel.jsx');
+var FilterInputRadio = require('./components/filter/FilterInputRadio.jsx');
 var DataTable = require('./components/DataTable.jsx');
 
 
@@ -14,6 +15,7 @@ var mockData = require('./mock-data');
 
 var App = React.createClass({
     render() {
+        var schemaIsActive = _.find(mockData.schema.fields, (field) => field.name === 'isActive');
         return (
             <div>
                 <LocalDatascope
@@ -22,9 +24,9 @@ var App = React.createClass({
                     >
                     <Datascope>
                         <SearchBar />
-                        <FilterPanel
-                            fields={['name', 'isActive', 'age']}
-                        />
+                        <FilterPanel fields={['name', 'isActive', 'age']}>
+                            <FilterInputRadio field={'isActive'} />
+                        </FilterPanel>
                         <DataTable />
                     </Datascope>
                 </LocalDatascope>
