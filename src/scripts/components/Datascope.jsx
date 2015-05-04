@@ -26,12 +26,10 @@ var Datascope = React.createClass({
         return { onChangeQuery: function(){} }
     },
 
-    onChangeSearch(searchId, value) {
+    onChangeSearch(searchId, value, fields) {
         var query = !_.isObject(this.props.query.search) ?
-            React.addons.update(this.props.query, {search: {$set: {[searchId]: {value}}}}) :
-            _.has(this.props.query.search, searchId) ?
-                React.addons.update(this.props.query, {search: {[searchId]: {value: {$set: value}}}}) :
-                React.addons.update(this.props.query, {search: {[searchId]: {$set: {value}}}});
+            React.addons.update(this.props.query, {search: {$set: {[searchId]: {value, fields}}}}) :
+            React.addons.update(this.props.query, {search: {[searchId]: {$set: {value, fields}}}});
 
         this.props.onChangeQuery(query);
     },
@@ -90,6 +88,8 @@ var Datascope = React.createClass({
 //      `lt` - less than (number only)
 //      `gt` - greater than (number only)
 //      `in` - list of values, of which the column value must be one
+//      `intersects` - for data type `array` only, a list of values which filter the data such that:
+//                     length(intersection(dataList, thisList)) > 0
 // `searches` are search terms meant to fuzzy match, potentially against multiple fields
 // `sort` describes how the data should be sorted (column key and order)
 

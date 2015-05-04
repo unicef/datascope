@@ -15,11 +15,10 @@ var LocalDatascope = React.createClass({
     },
 
     _searchData(data, searchQueries) {
-        var searchableKeys = ['name', 'company'];
-
+        const stringFieldKeys = _(this.props.schema.fields).filter(f => f.type === 'string').pluck('name').value();
         return _.filter(data, d => {
             return _.any(searchQueries, searchQuery => {
-                //return _.any(searchQuery.fields, key => {
+                const searchableKeys = searchQuery.fields || stringFieldKeys;
                 return _.any(searchableKeys, key => {
                     return (d[key] + '').toLowerCase().indexOf(searchQuery.value.toLowerCase()) > -1;
                 })
@@ -31,7 +30,7 @@ var LocalDatascope = React.createClass({
         //return _.sortBy(data, sortQuery.key);
         return data.sort((a, b) => {
             var key = sortQuery.key,
-                order = sortQuery.order.toLowerCase().indexOf('asc') === 0 ? 1 : -1;
+                order = sortQuery.order.toLowerCase().indexOf('asc') === 0 ? -1 : 1;
             return (b[key] - a[key]) * order;
         })
     },
@@ -74,9 +73,10 @@ function matchesFilter(objToTest, filter, key) {
     var value = objToTest[key];
     if('eq' in filter) return value === filter.eq;
     if(_.isArray(filter.in)) return filter.in.indexOf(value) >= 0;
+    if(_.isArray(filter.intersects)) return _.intersection(filter.intersects, value).length > 0;
     if(_.isNumber(filter.gt) || _.isNumber(filter.lt)) {
         return ('gt' in filter ? value >= filter.gt : true) &&
-            ('lt' in filter ? value <= filter.lt : true);
+               ('lt' in filter ? value <= filter.lt : true);
     }
     return true;
 }

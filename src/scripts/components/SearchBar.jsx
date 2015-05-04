@@ -5,8 +5,9 @@ var _ = require('lodash'),
 var SearchBar = React.createClass({
     mixins: [InterfaceMixin('DatascopeSearch')],
     propTypes: {
-        onChangeSearch: React.PropTypes.func.isRequired,
+        onChangeSearch: React.PropTypes.func, // required
         id: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
+        fields: React.PropTypes.array,
         value: React.PropTypes.string
     },
 
@@ -18,13 +19,18 @@ var SearchBar = React.createClass({
 
 
     onChangeSearch(e) {
-        this.props.onChangeSearch(this.props.id, e.target.value);
+        this.props.onChangeSearch(this.props.id, e.target.value, this.props.fields);
     },
 
     render() {
+        const propsToPass = _.omit(this.props, ['id', 'fields', 'value', 'onChangeSearch']);
         return <div>
-            Search
-            <input type="text" value={this.props.value} onChange={this.onChangeSearch}/>
+            <input
+                type="text"
+                value={this.props.value}
+                onChange={this.onChangeSearch}
+                {...propsToPass}
+            />
         </div>
     }
 });

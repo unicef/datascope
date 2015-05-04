@@ -119,7 +119,7 @@ module.exports = function(grunt) {
 
         'webpack-dev-server': {
             options: {
-                hot:true,
+                hot: true,
                 port: 5709,
                 webpack: webpackDevConfig,
                 publicPath: webpackDevConfig.output.publicPath,
