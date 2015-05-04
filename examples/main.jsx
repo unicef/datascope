@@ -1,6 +1,6 @@
 require('babel/polyfill');
-require('../styles/main.css');
-require('../styles/fixed-data-table.css');
+require('styles/main.css');
+require('styles/fixed-data-table.css');
 
 var _ = require('lodash'),
     React = require('react/addons'),

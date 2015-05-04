@@ -84,6 +84,18 @@ module.exports = function(grunt) {
             }
         },
 
+        babel: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: 'src',
+                    src: ['*.js', '*.jsx'],
+                    dest: 'lib',
+                    ext: '.js'
+                }]
+            }
+        },
+
         // watch files for changes and run appropriate tasks to rebuild build/dev
         watch: {
             grunt: {
