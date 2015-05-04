@@ -1,7 +1,7 @@
 var _ = require('lodash'),
     React = require('react/addons'),
-    InterfaceMixin = require('InterfaceMixin'),
-    FilterInputRadio = require('./FilterInputRadio.jsx');
+    InterfaceMixin = require('./InterfaceMixin'),
+    FilterInputRadio = require('./FilterInputRadio');
 
 const PropTypes = React.PropTypes;
 

@@ -1,6 +1,15 @@
 'use strict';
 var _ = require('lodash');
 var webpackDevConfig = require('./webpack.config.js');
+var webpackBuildConfig = require('./webpack.config.build.js');
+var fs = require('fs');
+
+var nodeModules = {};
+fs.readdirSync('node_modules')
+    .filter(function(x) { return ['.bin'].indexOf(x) === -1; })
+    .forEach(function(mod) { nodeModules[mod] = 'commonjs ' + mod; });
+
+//console.log(nodeModules);
 
 module.exports = function(grunt) {
 
@@ -9,7 +18,6 @@ module.exports = function(grunt) {
 
     var config = {
         src: 'src',
-        build: 'build',
         filesToCopy: [
             // for performance we only match one level down: 'test/spec/{,*/}*.js'
             // if you want to recursively match all subfolders: 'test/spec/**/*.js'
@@ -28,7 +36,10 @@ module.exports = function(grunt) {
             dev: {
                 files: [{
                     dot: true,
-                    src: ['<%= config.build %>/*', '!<%= config.build %>/.git*']
+                    src: [
+                        'build/*', '!build/.git*',
+                        'lib/*', '!lib/.git*'
+                    ]
                 }]
             }
         },
@@ -48,17 +59,6 @@ module.exports = function(grunt) {
             }
         },
 
-        // bundle JS with browserify
-        browserify: {
-            dev: {
-                options: {
-                    transform: ['babelify'], // jeez who can keep up these days?
-                    browserifyOptions: {debug: true}
-                },
-                files: {'build/scripts/main.js': ['src/scripts/main.jsx']}
-            }
-        },
-
         // compile LESS to CSS
         less: {
             dev: {
@@ -71,16 +71,6 @@ module.exports = function(grunt) {
         uglify: {
             dev: {
                 files: {'build/scripts/main.js': 'build/scripts/main.js'}
-            }
-        },
-
-        // web server for serving files from build/[dev or dist]
-        connect: {
-            dev: {
-                options: {
-                    port: '9010',
-                    base: config.build
-                }
             }
         },
 
@@ -144,31 +134,51 @@ module.exports = function(grunt) {
                     debug: true
                 }
             }
+        },
+
+        webpack: {
+            dist: {
+                entry: './lib/index.js',
+                output: {
+                    path: 'build/',
+                    filename: 'react-datascope.js'
+                },
+                externals: {
+                    'react': 'commonjs react',
+                    'react/addons': 'commonjs react/addons',
+                    'lodash': 'commonjs lodash',
+                    'fixed-data-table': 'commonjs fixed-data-table'
+                }
+                //options: {
+                //    webpack: webpackBuildConfig
+                //}
+            }
+
         }
     });
 
 
     grunt.registerTask('serve', function(target) {
-        return (target === 'dist') ?
-            grunt.task.run(['clean:dev']) :
-            grunt.task.run(['webpack-dev-server']);
+        return grunt.task.run(['webpack-dev-server']);
     });
 
+    grunt.registerTask('build', ['clean', 'babel', 'webpack:dist']);
+
     // Dev tasks
-    grunt.registerTask('buildDev', [
-        'clean:dev',      // clean old files out of build/dev
-        'copy:dev',       // copy static asset files from app/ to build/dev
-        'browserify:dev', // bundle JS with browserify
-        'less:dev',       // compile LESS to CSS
-    ]);
-    grunt.registerTask('serveDev', [
-        'buildDev',
-        'connect:dev',     // web server for serving files from build/dev
-        'watch'            // watch src files for changes and rebuild when necessary
-    ]);
+    //grunt.registerTask('buildDev', [
+    //    'clean:dev',      // clean old files out of build/dev
+    //    'copy:dev',       // copy static asset files from app/ to build/dev
+    //    'browserify:dev', // bundle JS with browserify
+    //    'less:dev',       // compile LESS to CSS
+    //]);
+    //grunt.registerTask('serveDev', [
+    //    'buildDev',
+    //    'connect:dev',     // web server for serving files from build/dev
+    //    'watch'            // watch src files for changes and rebuild when necessary
+    //]);
 
 
     // Task aliases
-    grunt.registerTask('dev', ['serveDev']);
+    //grunt.registerTask('dev', ['serveDev']);
     //grunt.registerTask('serve', ['serveDev']);
 };

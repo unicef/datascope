@@ -1,6 +1,6 @@
 var _ = require('lodash'),
     React = require('react/addons'),
-    InterfaceMixin = require('InterfaceMixin');
+    InterfaceMixin = require('./InterfaceMixin');
 
 var SearchBar = React.createClass({
     mixins: [InterfaceMixin('DatascopeSearch')],

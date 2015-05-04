@@ -3,15 +3,10 @@ var webpack = require('webpack');
 
 module.exports = {
     context: __dirname,
-    entry: [
-        'webpack-dev-server/client?http://localhost:5709',
-        'webpack/hot/only-dev-server',
-        './src/scripts/main.jsx'
-    ],
+    entry: ['./src/index.js'],
     output: {
-        path: path.join(__dirname, 'lib'),
-        filename: 'bundle.js',
-        publicPath: '/assets/'
+        path: path.join(__dirname, 'build'),
+        filename: 'bundle.js'
     },
     //devtool: 'source-map',
 

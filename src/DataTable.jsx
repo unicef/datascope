@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var React = require('react/addons');
 var FixedDataTable = require('fixed-data-table');
-var InterfaceMixin = require('InterfaceMixin');
+var InterfaceMixin = require('./InterfaceMixin');
 
 var isColumnResizing;
 
