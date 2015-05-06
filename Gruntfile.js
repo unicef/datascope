@@ -17,14 +17,7 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     var config = {
-        src: 'src',
-        filesToCopy: [
-            // for performance we only match one level down: 'test/spec/{,*/}*.js'
-            // if you want to recursively match all subfolders: 'test/spec/**/*.js'
-            '{,*/}*.{gif,jpeg,jpg,png,webp,gif,ico}',
-            '{,*/}*.html',
-            'fonts/{,*/}*.*',
-        ]
+        src: 'src'
     };
 
     grunt.initConfig({
@@ -33,7 +26,7 @@ module.exports = function(grunt) {
 
         // clean out old files from build folders
         clean: {
-            dev: {
+            build: {
                 files: [{
                     dot: true,
                     src: [
@@ -44,38 +37,10 @@ module.exports = function(grunt) {
             }
         },
 
-        // copy static asset files from src/ to build/[dev or dist]
-        copy: {
-            dev: {
-                files: [
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: config.src,
-                        dest: config.build,
-                        src: config.filesToCopy
-                    }
-                ]
-            }
-        },
-
-        // compile LESS to CSS
-        less: {
-            dev: {
-                //options: { cleancss: true }, // uncomment to minify
-                files: {'build/styles/main.css': ['src/styles/main.less']}
-            }
-        },
-
-        // run uglify on JS to minify it
-        uglify: {
-            dev: {
-                files: {'build/scripts/main.js': 'build/scripts/main.js'}
-            }
-        },
-
+        // transpile JSX/ES6 to normal JS
+        // (this is the standard build in lib)
         babel: {
-            dist: {
+            build: {
                 files: [{
                     expand: true,
                     cwd: 'src',
@@ -86,8 +51,26 @@ module.exports = function(grunt) {
             }
         },
 
+        // also create a self-contained bundle version
+        webpack: {
+            build: {
+                entry: './lib/index.js',
+                output: {
+                    path: 'build/',
+                    filename: 'react-datascope.js'
+                }
+            }
+        },
+
+        // minify bundle
+        uglify: {
+            build: {
+                files: {'build/react-datascope.min.js': 'build/react-datascope.js'}
+            }
+        },
+
         // watch files for changes and run appropriate tasks to rebuild build/dev
-        watch: {
+        watch2: {
             grunt: {
                 files: 'Gruntfile.js',
                 tasks: ['buildDev', 'shell:sayBuiltJs']
@@ -113,10 +96,15 @@ module.exports = function(grunt) {
             }
         },
 
+        watch: {
+            build: {
+                files: '<%= config.src %>/*.*',
+                tasks: ['build']
+            }
+        },
+
         shell: {
-            sayBuiltJs: { command: 'say "built js" -v Cellos' },
-            sayBuiltLess: { command: 'say "built less" -v Cellos' },
-            sayCopied: { command: 'say "copied files" -v Cellos' }
+            sayBuiltJs: { command: 'say "built js" -v Cellos' }
         },
 
         'webpack-dev-server': {
@@ -134,27 +122,8 @@ module.exports = function(grunt) {
                     debug: true
                 }
             }
-        },
-
-        webpack: {
-            dist: {
-                entry: './lib/index.js',
-                output: {
-                    path: 'build/',
-                    filename: 'react-datascope.js'
-                },
-                externals: {
-                    'react': 'commonjs react',
-                    'react/addons': 'commonjs react/addons',
-                    'lodash': 'commonjs lodash',
-                    'fixed-data-table': 'commonjs fixed-data-table'
-                }
-                //options: {
-                //    webpack: webpackBuildConfig
-                //}
-            }
-
         }
+
     });
 
 
@@ -162,7 +131,11 @@ module.exports = function(grunt) {
         return grunt.task.run(['webpack-dev-server']);
     });
 
-    grunt.registerTask('build', ['clean', 'babel', 'webpack:dist']);
+    grunt.registerTask('examples', function(target) {
+        return grunt.task.run(['webpack-dev-server']);
+    });
+
+    grunt.registerTask('build', ['clean', 'babel', 'webpack', 'uglify']);
 
     // Dev tasks
     //grunt.registerTask('buildDev', [

@@ -9,9 +9,9 @@ var DataTable = React.createClass({
     mixins: [InterfaceMixin('DatascopeSort')],
     propTypes: {
         // data displayed on the table
-        data: React.PropTypes.array.isRequired,
+        data: React.PropTypes.array, // required
         // data schema
-        schema: React.PropTypes.object.isRequired,
+        schema: React.PropTypes.object, // required
         // key for the column which the data is sorted on (eg. 'age')
         sortKey: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
         // order for the sort ('ascending' or 'descending')
@@ -46,6 +46,7 @@ var DataTable = React.createClass({
 
     render() {
         return <div>
+
             <FixedDataTable.Table
                 rowHeight={50}
                 rowGetter={i => this.props.data[i]}
