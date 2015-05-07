@@ -89,7 +89,9 @@ function matchesFilter(objToTest, filter, key) {
     var value = objToTest[key];
     if('eq' in filter) return value === filter.eq;
     if(_.isArray(filter.in)) return filter.in.indexOf(value) >= 0;
-    if(_.isArray(filter.intersects)) return _.intersection(filter.intersects, value).length > 0;
+    if(_.isArray(filter.intersects)) {
+        return _.intersection(filter.intersects, _.pluck(value, 'value')).length > 0;
+    }
     if(_.isNumber(filter.gt) || _.isNumber(filter.lt)) {
         return ('gt' in filter ? value >= filter.gt : true) &&
                ('lt' in filter ? value <= filter.lt : true);
