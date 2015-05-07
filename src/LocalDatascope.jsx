@@ -13,6 +13,12 @@ var LocalDatascope = React.createClass({
             query: {}
         }
     },
+    componentWillMount() {
+        this._fieldsByName = _.indexBy(this.props.schema.fields, 'name');
+    },
+    componentWillReceiveProps(newProps) {
+        this._fieldsByName = _.indexBy(newProps.schema.fields, 'name');
+    },
 
     _searchData(data, searchQueries) {
         const stringFieldKeys = _(this.props.schema.fields).filter(f => f.type === 'string').pluck('name').value();
@@ -30,8 +36,10 @@ var LocalDatascope = React.createClass({
         //return _.sortBy(data, sortQuery.key);
         return data.sort((a, b) => {
             var key = sortQuery.key,
-                order = sortQuery.order.toLowerCase().indexOf('asc') === 0 ? -1 : 1;
-            return (b[key] - a[key]) * order;
+                order = sortQuery.order.toLowerCase().indexOf('asc') === 0 ? -1 : 1,
+                field = this._fieldsByName[key],
+                comparator = (field.type === 'string') ? stringComparator : numberComparator;
+            return comparator(a[key], b[key]) * order;
         })
     },
     _filterData(data, filterQuery) {
@@ -66,6 +74,14 @@ var LocalDatascope = React.createClass({
         </div>
     }
 });
+
+function stringComparator(a, b) {
+    var aLower = (a+'').toLowerCase(), bLower = (b+'').toLowerCase();
+    return aLower > bLower ? 1 : (aLower < bLower ? -1 : 0);
+}
+function numberComparator(a, b) {
+    return a > b ? 1 : (a < b ? -1 : 0);
+}
 
 function matchesFilter(objToTest, filter, key) {
     // matcher for our filter query language

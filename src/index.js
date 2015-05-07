@@ -3,6 +3,7 @@ module.exports = {
     LocalDatascope: require('./LocalDatascope'),
 
     DataTable: require('./DataTable'),
+    SimpleDataTable: require('./SimpleDataTable'),
 
     FilterPanel: require('./FilterPanel'),
     FilterInputCheckbox: require('./FilterInputCheckbox'),

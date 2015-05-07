@@ -68,7 +68,6 @@ var Datascope = React.createClass({
                     propsToPass.sortOrder = query.sort ? query.sort.order : null;
                     propsToPass.onChangeSort = this.onChangeSort;
                 }
-
                 if(childImplements('DatascopeFilter')) {
                     propsToPass.filter = _.isObject(query.filter) ? query.filter : undefined;
                     propsToPass.onChangeFilter = this.onChangeFilter;

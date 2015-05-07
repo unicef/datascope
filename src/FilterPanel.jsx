@@ -28,8 +28,6 @@ var FilterPanel = React.createClass({
         const fieldSchemasByName = _.indexBy(this.props.schema.fields, 'name');
         return (
             <div className="datascope-filter-panel">
-                I'm a little filter panel
-
                 {React.Children.map(this.props.children, child => {
                     const childKey = child.props.field;
                     var propsToPass = {
@@ -45,7 +43,6 @@ var FilterPanel = React.createClass({
         );
     },
     renderChildren() {
-
     },
     renderBooleanInput() {
         return <div>

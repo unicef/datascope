@@ -7,10 +7,10 @@ module.exports = {
     entry: [
         'webpack-dev-server/client?http://localhost:5709',
         'webpack/hot/only-dev-server',
-        './examples/main.jsx'
+        './examples/src/main.jsx'
     ],
     output: {
-        path: path.join(__dirname, 'build'),
+        path: path.join(__dirname, 'examples/assets'),
         filename: 'bundle.js',
         publicPath: '/assets/'
     },

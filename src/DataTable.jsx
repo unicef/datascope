@@ -46,7 +46,6 @@ var DataTable = React.createClass({
 
     render() {
         return <div>
-
             <FixedDataTable.Table
                 rowHeight={50}
                 rowGetter={i => this.props.data[i]}

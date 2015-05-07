@@ -1,15 +1,8 @@
 var _ = require('lodash'),
-    React = require('react/addons'),
-    Testing = require('./test.jsx');
+    React = require('react/addons');
 
-var Datascope = require('./../src/Datascope.jsx');
-var LocalDatascope = require('./../src/LocalDatascope.jsx');
-var SearchBar = require('./../src/SearchBar.jsx');
-var FilterPanel = require('./../src/FilterPanel.jsx');
-var FilterInputRadio = require('././FilterInputRadio.jsx');
-var FilterInputCheckbox = require('././FilterInputCheckbox.jsx');
-var DataTable = require('./../src/DataTable.jsx');
-
+var {Datascope, LocalDatascope, SearchBar, FilterPanel, FilterInputRadio, FilterInputCheckbox, DataTable} =
+        require('../../lib/index');
 
 //var mockData = require('./mock-data');
 var mockData = require('./mock-data2');
