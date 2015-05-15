@@ -1,12 +1,12 @@
 var _ = require('lodash'),
     React = require('react/addons'),
-    InterfaceMixin = require('./InterfaceMixin'),
+    InterfaceMixin = require('./../InterfaceMixin'),
     FilterInputRadio = require('./FilterInputRadio');
 
 const PropTypes = React.PropTypes;
 
 var FilterPanel = React.createClass({
-    mixins: [InterfaceMixin('DatascopeFilter')],
+    mixins: [InterfaceMixin('Datascope', 'DatascopeFilter')],
     propTypes: {
         filter: React.PropTypes.objectOf(React.PropTypes.object),
         fields: React.PropTypes.array,
@@ -15,7 +15,8 @@ var FilterPanel = React.createClass({
     getDefaultProps: function() {
         return {
             filter: {},
-            schema: {}
+            schema: {},
+            testing: 4
         }
     },
 
@@ -30,11 +31,14 @@ var FilterPanel = React.createClass({
             <div className="datascope-filter-panel">
                 {React.Children.map(this.props.children, child => {
                     const childKey = child.props.field;
+
+                    console.log('FilterInput props', this.props);
                     var propsToPass = {
                         onChange: this.onChangeFilterInput,
                         filter: this.props.filter[childKey],
                         schema: fieldSchemasByName[childKey]
                     };
+
                     console.log('passing to filter input', propsToPass);
 
                     return React.cloneElement(child, propsToPass);

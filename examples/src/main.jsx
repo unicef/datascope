@@ -7,17 +7,55 @@ var _ = require('lodash'),
 
 var {
     Datascope, LocalDatascope,
-    DataTable, SimpleDataTable,
+    InterfaceMixin,
+    SimpleDataTable, SimpleDataTableColumn,
     SearchBar,
     FilterPanel, FilterInputRadio, FilterInputCheckbox,
 } = require('../../src');
 
-var mockData = require('./mock-data2');
+var mockData = require('./mock-data3');
+
+var TestElement = React.createClass({
+    mixins: [InterfaceMixin('Datascope', 'DatascopeSearch', 'DatascopeSort', 'DatascopeFilter')],
+    componentDidMount() {
+        console.log('mounted TestComponent', this.props)
+    },
+    render() {
+        return <div>
+            {this.props.data.map(d => {
+                return <div>{d}</div>
+            })}
+        </div>
+
+    }
+});
+
 
 var App = React.createClass({
     render() {
-        var schemaIsActive = _.find(mockData.schema.fields, (field) => field.name === 'isActive');
-        var searchableFieldNames = _(mockData.schema.fields).filter(f => f.searchable).pluck('name').value();
+        var schemaIsActive = _.find(mockData.schema.items.properties, (prop) => prop.title === 'isActive');
+        var searchableFieldNames = _(mockData.schema.items.properties).filter(f => f.searchable).pluck('name').value();
+
+        //<SearchBar
+        //    id="search-all"
+        //    fields={searchableFieldNames}
+        //    placeholder="all fields"
+        //    />
+        //<SearchBar
+        //id="search-first-name"
+        //fields={['first_name']}
+        //placeholder="first name"
+        //    />
+        //
+        //    <FilterPanel>
+        //        <FilterInputRadio field='isActive' />
+        //        <FilterInputCheckbox field='groups' />
+        //    </FilterPanel>
+
+        //<div>
+        //    <SimpleDataTable />
+        //</div>
+
         return (
             <div>
                 <LocalDatascope
@@ -25,25 +63,9 @@ var App = React.createClass({
                     schema={mockData.schema}
                     >
                     <Datascope>
-
-                        <SearchBar
-                            id="search-all"
-                            fields={searchableFieldNames}
-                            placeholder="all fields"
-                            />
-                        <SearchBar
-                            id="search-first-name"
-                            fields={['first_name']}
-                            placeholder="first name"
-                            />
-
-                        <FilterPanel>
-                            <FilterInputRadio field='isActive' />
-                            <FilterInputCheckbox field='groups' />
-                        </FilterPanel>
-
-                        <SimpleDataTable />
-
+                        <div><div><div>
+                            <TestElement />
+                        </div></div></div>
                     </Datascope>
                 </LocalDatascope>
             </div>

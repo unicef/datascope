@@ -1,9 +1,9 @@
 var _ = require('lodash'),
     React = require('react/addons'),
-    InterfaceMixin = require('./InterfaceMixin');
+    InterfaceMixin = require('./../InterfaceMixin');
 
 var SearchBar = React.createClass({
-    mixins: [InterfaceMixin('DatascopeSearch')],
+    mixins: [InterfaceMixin('Datascope', 'DatascopeSearch')],
     propTypes: {
         onChangeSearch: React.PropTypes.func, // required
         id: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),

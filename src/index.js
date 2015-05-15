@@ -2,14 +2,15 @@ module.exports = {
     Datascope: require('./Datascope'),
     LocalDatascope: require('./LocalDatascope'),
 
-    DataTable: require('./DataTable'),
-    SimpleDataTable: require('./SimpleDataTable'),
+    InterfaceMixin: require('./InterfaceMixin'),
 
-    FilterPanel: require('./FilterPanel'),
-    FilterInputCheckbox: require('./FilterInputCheckbox'),
-    FilterInputRadio: require('./FilterInputRadio'),
+    DataTable: require('./modules/DataTable'),
+    SimpleDataTable: require('./modules/SimpleDataTable'),
+    SimpleDataTableColumn: require('./modules/SimpleDataTableColumn'),
 
-    SearchBar: require('./SearchBar'),
+    FilterPanel: require('./modules/FilterPanel'),
+    FilterInputCheckbox: require('./modules/FilterInputCheckbox'),
+    FilterInputRadio: require('./modules/FilterInputRadio'),
 
-    InterfaceMixin: require('./InterfaceMixin')
+    SearchBar: require('./modules/SearchBar')
 };

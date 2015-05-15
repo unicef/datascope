@@ -6,16 +6,10 @@
 // mixins: [InterfaceMixin('SomeInterface')] // or...
 // mixins: [InterfaceMixin(['SomeInterface', 'AnotherInterface'])]
 
-var InterfaceMixin = function(interfaces) {
-    interfaces = isStr(interfaces) ? [interfaces] : interfaces;
-
+export default function InterfaceMixin(...interfaces) {
     return {
         statics: {
             implementsInterface(name) { return interfaces.indexOf(name) >= 0; }
         }
     }
 };
-
-function isStr(s){ return typeof s === "string" || s instanceof String; }
-
-module.exports = InterfaceMixin;

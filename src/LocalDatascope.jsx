@@ -14,14 +14,16 @@ var LocalDatascope = React.createClass({
         }
     },
     componentWillMount() {
-        this._fieldsByName = _.indexBy(this.props.schema.fields, 'name');
+        //this._fieldsByName = _.indexBy(this.props.schema.items.properties, 'name');
     },
     componentWillReceiveProps(newProps) {
-        this._fieldsByName = _.indexBy(newProps.schema.fields, 'name');
+        //this._fieldsByName = _.indexBy(newProps.schema.items.properties, 'name');
     },
 
     _searchData(data, searchQueries) {
-        const stringFieldKeys = _(this.props.schema.fields).filter(f => f.type === 'string').pluck('name').value();
+        const propSchemas = this.props.schema.items.properties;
+        const stringFieldKeys = _(propSchemas).keys()
+            .filter(key => propSchemas[key].type === 'string').value();
         return _.filter(data, d => {
             return _.any(searchQueries, searchQuery => {
                 const searchableKeys = searchQuery.fields || stringFieldKeys;
@@ -69,7 +71,8 @@ var LocalDatascope = React.createClass({
                 propsToPass.onChangeQuery = this.onChangeQuery;
                 propsToPass.data = this.state.displayData;
                 propsToPass.query = this.state.query;
-                return React.addons.cloneWithProps(child, propsToPass);
+                //return React.addons.cloneWithProps(child, propsToPass);
+                return React.cloneElement(child, propsToPass);
             })}
         </div>
     }

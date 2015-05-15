@@ -1,12 +1,12 @@
 var _ = require('lodash');
 var React = require('react/addons');
 var FixedDataTable = require('fixed-data-table');
-var InterfaceMixin = require('./InterfaceMixin');
+var InterfaceMixin = require('./../InterfaceMixin');
 
 var isColumnResizing;
 
 var DataTable = React.createClass({
-    mixins: [InterfaceMixin('DatascopeSort')],
+    mixins: [InterfaceMixin('Datascope', 'DatascopeSort')],
     propTypes: {
         // data displayed on the table
         data: React.PropTypes.array, // required

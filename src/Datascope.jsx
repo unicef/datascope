@@ -3,11 +3,18 @@ var _ = require('lodash'),
 
 const PropTypes = React.PropTypes;
 
+/**
+ * Datascope is the main wrapper class which passes data down the tree (to children as props.data)
+ * and queries back up the tree (via the onChangeQuery callback).
+ */
+
 var Datascope = React.createClass({
     propTypes: {
         data: PropTypes.array,
         schema: PropTypes.shape({
-            fields: PropTypes.arrayOf(PropTypes.object)
+            items: PropTypes.shape({
+                properties: PropTypes.object
+            })
         }),
         query: PropTypes.shape({
             search: PropTypes.objectOf(PropTypes.shape({
@@ -23,7 +30,10 @@ var Datascope = React.createClass({
         onChangeQuery: React.PropTypes.func
     },
     getDefaultProps() {
-        return { onChangeQuery: function(){} }
+        return {
+            query: {},
+            onChangeQuery: function(){}
+        }
     },
 
     onChangeSearch(searchId, value, fields) {
@@ -32,6 +42,7 @@ var Datascope = React.createClass({
             React.addons.update(this.props.query, {search: {[searchId]: {$set: {value, fields}}}});
 
         this.props.onChangeQuery(query);
+        //this.forceUpdate();
     },
     onChangeSort(key, order) {
         order = order || 'descending';
@@ -39,43 +50,98 @@ var Datascope = React.createClass({
         var query = React.addons.update(this.props.query, {sort: {$set: sortObj}});
 
         this.props.onChangeQuery(query);
+        //this.forceUpdate();
     },
     onChangeFilter(key, filterObj) {
         console.log('new filter', filterObj);
         var query = !_.isObject(this.props.query.filter) ?
             React.addons.update(this.props.query, {filter: {$set: {[key]: filterObj}}}) :
             React.addons.update(this.props.query, {filter: {$merge: {[key]: filterObj}}});
+
         this.props.onChangeQuery(query);
+        //this.forceUpdate();
     },
 
     render() {
+        const query = this.props.query;
+        const {onChangeSearch, onChangeSort, onChangeFilter} = this;
+        const allProps = _.assign(
+            _.pick(this.props, ['data', 'schema', 'query']),
+            {onChangeSearch, onChangeSort, onChangeFilter},
+            {
+                filter: _.isObject(query.filter) ? query.filter : {},
+                sortKey: query.sort ? query.sort.key : null,
+                sortOrder: query.sort ? query.sort.order : null
+            }
+        );
+        const datascopeProps = _.pick(this.props, ['data', 'schema', 'query']);
+
+        const sortProps = {onChangeSort, sort: _.isObject(query.sort) ? query.sort : {}};
+        const filterProps = {onChangeFilter, filter: _.isObject(query.filter) ? query.filter : {}};
+        const searchProps = {onChangeSearch};
+
+
+        //console.log('consumerProps', datascopeProps, sortProps, filterProps, searchProps);
+
+        // Recursively traverse children, cloning Datascope modules and adding their required props
+        // React 0.14 should introduce a new feature: parent-based contexts
+        // When 0.14 lands, we should be able to use context for this instead
         return <div>
-            {React.Children.map(this.props.children, child => {
-                var childImplements = _.isFunction(child.type.implementsInterface) ?
-                    child.type.implementsInterface : () => false;
-                var query = this.props.query;
-                var propsToPass = _.pick(this.props, ['data', 'schema', 'query']);
+            {this.recursiveCloneChildren(this.props.children, datascopeProps, sortProps, filterProps, searchProps)}
+        </div>
 
-                if(childImplements('DatascopeSearch')) {
-                    var searchQuery = _.isObject(query.search) ? query.search[child.props.id] : undefined;
-                    var searchValue = _.isObject(searchQuery) ? searchQuery.value || '' : '';
-                    propsToPass.onChangeSearch = this.onChangeSearch;
-                    propsToPass.value = searchValue;
-                }
+        //return <div>
+        //    {React.Children.map(this.props.children, child => {
+        //        var childImplements = _.isFunction(child.type.implementsInterface) ?
+        //            child.type.implementsInterface : () => false;
+        //        var query = this.props.query;
+        //        var propsToPass = _.pick(this.props, ['data', 'schema', 'query']);
+        //
+        //        if(childImplements('DatascopeSearch')) {
+        //            var searchQuery = _.isObject(query.search) ? query.search[child.props.id] : undefined;
+        //            var searchValue = _.isObject(searchQuery) ? searchQuery.value || '' : '';
+        //            propsToPass.onChangeSearch = this.onChangeSearch;
+        //            propsToPass.value = searchValue;
+        //        }
+        //
+        //        if(childImplements('DatascopeSort')) {
+        //            propsToPass.sortKey = query.sort ? query.sort.key : null;
+        //            propsToPass.sortOrder = query.sort ? query.sort.order : null;
+        //            propsToPass.onChangeSort = this.onChangeSort;
+        //        }
+        //        if(childImplements('DatascopeFilter')) {
+        //            propsToPass.filter = _.isObject(query.filter) ? query.filter : {};
+        //            propsToPass.onChangeFilter = this.onChangeFilter;
+        //        }
+        //
+        //        console.log('passing from datascope', propsToPass);
+        //        return React.addons.cloneWithProps(child, propsToPass);
+        //        //return React.cloneElement(child, propsToPass);
+        //    })}
+        //</div>;
+    },
+    recursiveCloneChildren(children, datascopeProps, sortProps, filterProps,  searchProps) {
+        return React.Children.map(children, child => {
+            console.log('traversing ', child.type.displayName || child.type);
+            const childImplements = _.isFunction(child.type.implementsInterface) ?
+                child.type.implementsInterface : () => false;
+            var childProps = {};
 
-                if(childImplements('DatascopeSort')) {
-                    propsToPass.sortKey = query.sort ? query.sort.key : null;
-                    propsToPass.sortOrder = query.sort ? query.sort.order : null;
-                    propsToPass.onChangeSort = this.onChangeSort;
-                }
-                if(childImplements('DatascopeFilter')) {
-                    propsToPass.filter = _.isObject(query.filter) ? query.filter : undefined;
-                    propsToPass.onChangeFilter = this.onChangeFilter;
-                }
+            if(childImplements('Datascope')) {
+                childProps = _.extend(childProps, datascopeProps,
+                    childImplements('DatascopeSort') ? sortProps : null,
+                    childImplements('DatascopeFilter') ? filterProps : null,
+                    childImplements('DatascopeSearch') ? searchProps : null
+                );
+                console.log('Datascope child ', childProps);
+                child = React.cloneElement(child, childProps);
+            }
 
-                return React.addons.cloneWithProps(child, propsToPass);
-            })}
-        </div>;
+            childProps.children = this.recursiveCloneChildren(child.props.children,
+                datascopeProps, sortProps, filterProps, searchProps);
+
+            return React.cloneElement(child, childProps);
+        })
     }
 });
 
