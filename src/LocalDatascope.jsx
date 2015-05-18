@@ -13,12 +13,6 @@ var LocalDatascope = React.createClass({
             query: {}
         }
     },
-    componentWillMount() {
-        //this._fieldsByName = _.indexBy(this.props.schema.items.properties, 'name');
-    },
-    componentWillReceiveProps(newProps) {
-        //this._fieldsByName = _.indexBy(newProps.schema.items.properties, 'name');
-    },
 
     _searchData(data, searchQueries) {
         const propSchemas = this.props.schema.items.properties;
@@ -39,7 +33,7 @@ var LocalDatascope = React.createClass({
         return data.sort((a, b) => {
             var key = sortQuery.key,
                 order = sortQuery.order.toLowerCase().indexOf('asc') === 0 ? -1 : 1,
-                field = this._fieldsByName[key],
+                field = this.props.schema.items.properties[key],
                 comparator = (field.type === 'string') ? stringComparator : numberComparator;
             return comparator(a[key], b[key]) * order;
         })

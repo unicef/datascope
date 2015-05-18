@@ -76,7 +76,11 @@ var Datascope = React.createClass({
         );
         const datascopeProps = _.pick(this.props, ['data', 'schema', 'query']);
 
-        const sortProps = {onChangeSort, sort: _.isObject(query.sort) ? query.sort : {}};
+        const sortProps = {onChangeSort,
+            sort: _.isObject(query.sort) ? query.sort : {},
+            sortKey: query.sort ? query.sort.key : null,
+            sortOrder: query.sort ? query.sort.order : null
+        };
         const filterProps = {onChangeFilter, filter: _.isObject(query.filter) ? query.filter : {}};
         const searchProps = {onChangeSearch};
 
@@ -122,6 +126,9 @@ var Datascope = React.createClass({
     },
     recursiveCloneChildren(children, datascopeProps, sortProps, filterProps,  searchProps) {
         return React.Children.map(children, child => {
+
+            if(!_.isObject(child)) return child;
+
             console.log('traversing ', child.type.displayName || child.type);
             const childImplements = _.isFunction(child.type.implementsInterface) ?
                 child.type.implementsInterface : () => false;
@@ -134,13 +141,14 @@ var Datascope = React.createClass({
                     childImplements('DatascopeSearch') ? searchProps : null
                 );
                 console.log('Datascope child ', childProps);
-                child = React.cloneElement(child, childProps);
+                //child = React.cloneElement(child, childProps);
             }
 
             childProps.children = this.recursiveCloneChildren(child.props.children,
                 datascopeProps, sortProps, filterProps, searchProps);
 
             return React.cloneElement(child, childProps);
+            //return child;
         })
     }
 });

@@ -21,10 +21,15 @@ var TestElement = React.createClass({
         console.log('mounted TestComponent', this.props)
     },
     render() {
+        React.Children.forEach(this.props.children, (child) => console.log(child.type))
         return <div>
+
             {this.props.data.map(d => {
-                return <div>{d}</div>
+                return _.map(this.props.schema.items.properties, (propSchema, key) => {
+                    return <div><strong>{propSchema.title}: </strong>{d[key]}</div>
+                }).concat(<hr/>);
             })}
+
         </div>
 
     }
@@ -63,9 +68,23 @@ var App = React.createClass({
                     schema={mockData.schema}
                     >
                     <Datascope>
-                        <div><div><div>
-                            <TestElement />
-                        </div></div></div>
+
+                        <TestElement>
+                        </TestElement>
+                        <h1>Other elements can go inside Datascope...</h1>
+                        <SimpleDataTable>
+                            <SimpleDataTableColumn name="first_name" />
+                        </SimpleDataTable>
+
+                        <div>
+                            <SimpleDataTable>
+                                <SimpleDataTableColumn name="first_name" />
+                            </SimpleDataTable>
+                        </div>
+
+
+                        <SimpleDataTable></SimpleDataTable>
+
                     </Datascope>
                 </LocalDatascope>
             </div>
