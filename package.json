@@ -8,7 +8,8 @@
   "dependencies": {
     "fixed-data-table": "^0.1.2",
     "lodash": ">=3.8.0",
-    "moment": "^2.10.2"
+    "moment": "^2.10.2",
+    "numeral": "^1.5.3"
   },
   "peerDependencies": {
     "react": ">=0.13.3"

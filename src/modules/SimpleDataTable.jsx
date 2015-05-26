@@ -1,18 +1,22 @@
 var _ = require('lodash');
 var React = require('react/addons');
+var moment = require('moment');
+var numeral = require('numeral');
 var PropTypes = React.PropTypes;
 var InterfaceMixin = require('./../InterfaceMixin');
-var SimpleDataTableColumn = require('./SimpleDataTableColumn.jsx');
+var SimpleDataTableColumn = require('./SimpleDataTableColumn');
 
 var SimpleDataTableCell = React.createClass({
     propTypes: {
         name: PropTypes.string,
         schema: PropTypes.object, // schema for this field
+        field: PropTypes.object, // schema for this field
         row: PropTypes.object // the current data row which contains this cell
     },
     render() {
+        var field = this.props.field;
         return <td>
-            {this.props.row[this.props.name]}
+            {field.renderer(this.props.row[field.key], field, {moment, numeral})}
         </td>
     }
 });
@@ -23,11 +27,12 @@ var TableHeaderCell = React.createClass({
             name: PropTypes.string,
             title: PropTypes.string
         }), // schema for this field
+        field: PropTypes.object,
         title: PropTypes.string, // to override schema title
         onClick: PropTypes.func, // usually the sort function
         isSortedBy: PropTypes.bool, // true if the table is sorted by this column
         sortIndicatorAscending: PropTypes.string,
-        sortIndicatorDescending: PropTypes.string,
+        sortIndicatorDescending: PropTypes.string
     },
     getDefaultProps() {
         return {
@@ -37,7 +42,7 @@ var TableHeaderCell = React.createClass({
         }
     },
     _getTitle() {
-        return _.isUndefined(this.props.title) ? this.props.schema.title : this.props.title;
+        return _.isUndefined(this.props.title) ? this.props.field.title : this.props.title;
     },
     render() {
         const isSortAscending = (this.props.sortOrder || '').toLowerCase().indexOf('asc') === 0;
@@ -45,10 +50,10 @@ var TableHeaderCell = React.createClass({
             (isSortAscending ? this.props.sortIndicatorAscending : this.props.sortIndicatorDescending)
             : '';
 
-        return <td onClick={this.props.onClick}>
+        return <th onClick={this.props.onClick}>
             {this._getTitle()}
             {sortIndicator}
-        </td>
+        </th>
     }
 });
 
@@ -59,7 +64,12 @@ var SimpleDataTable = React.createClass({
         data: React.PropTypes.array,
         // data schema, from Datascope
         schema: React.PropTypes.object,
+        // fields (display rules)
+        fields: React.PropTypes.object,
+        orderedFields: React.PropTypes.array,
+        // query (search, sort, filter)
         query: React.PropTypes.object,
+
         // if true, can sort table by clicking header
         sortable: React.PropTypes.bool,
         // key for the column on which the data is sorted (eg. 'age')
@@ -74,7 +84,6 @@ var SimpleDataTable = React.createClass({
             sortable: true
         }
     },
-
 
     onClickColumnHeader(dataKey) {
         var isSortedOnColumn = (dataKey === this.props.sortKey);
@@ -100,39 +109,27 @@ var SimpleDataTable = React.createClass({
             return isColumn ? child : null;
         });
 
-        //var columns = children.filter(child => {
-        //    return _.isFunction(child.type.implementsInterface) && child.type.implementsInterface('DataTableColumn')
-        //});
-
-        if(!hasColumns) columns = _.map(this.props.schema.items.properties,
-            (p, key) => <SimpleDataTableColumn name={key} />
+        if(!hasColumns) columns = _.map(this.props.orderedFields,
+            (field) => <SimpleDataTableColumn name={field.key} />
         );
 
         var renderRow = _.partial(this.renderRow, columns);
         return <table>
             <thead>
-            <tr>
-                {React.Children.map(columns, column => {
-                    //var propsToPass = _.clone(column.props); // todo _.omit or _.pick
-                    //propsToPass.schema = this.props.schema.items.properties[column.props.name];
-                    //propsToPass.onClick = this.props.sortable ?
-                    //    this.onClickColumnHeader.bind(this, column.props.name) : null;
-                    //propsToPass.isSortedBy = (column.props.name === this.props.sortKey);
-                    //propsToPass.sortOrder = this.props.sortOrder;
-                    //return <TableHeaderCell {...propsToPass} />
-                    return this.renderColumnHeader(column);
-                })}
-            </tr>
+                <tr>
+                    {React.Children.map(columns, this.renderColumnHeader)}
+                </tr>
             </thead>
             <tbody>
-            {this.props.data.map(renderRow)}
+                {this.props.data.map(renderRow)}
             </tbody>
         </table>
     },
 
     renderColumnHeader(column) {
-        console.log('sortKey', this.props.sortKey);
+        //console.log('sortKey', this.props.sortKey);
         var propsToPass = _.assign({}, _.clone(column.props), {// todo _.omit or _.pick
+            field: this.props.fields[column.props.name],
             schema: this.props.schema.items.properties[column.props.name],
             onClick: this.props.sortable ? this.onClickColumnHeader.bind(this, column.props.name) : null,
             isSortedBy: (column.props.name === this.props.sortKey),
@@ -143,10 +140,10 @@ var SimpleDataTable = React.createClass({
     renderRow(columns, row) {
         return <tr>
             {React.Children.map(columns, column => {
-                var schema = this.props.schema.items.properties[column.props.name];
                 return <SimpleDataTableCell
                     name={column.props.name}
-                    schema={schema}
+                    schema={this.props.schema.items.properties[column.props.name]}
+                    field={this.props.fields[column.props.name]}
                     row={row}
                     />
             })}

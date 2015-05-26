@@ -8,12 +8,16 @@ var _ = require('lodash'),
 var {
     Datascope, LocalDatascope,
     InterfaceMixin,
+    DataList,
     SimpleDataTable, SimpleDataTableColumn,
     SearchBar,
     FilterPanel, FilterInputRadio, FilterInputCheckbox,
+    Paginator
 } = require('../../src');
 
 var mockData = require('./mock-data3');
+
+window.moment = require('moment');
 
 var TestElement = React.createClass({
     mixins: [InterfaceMixin('Datascope', 'DatascopeSearch', 'DatascopeSort', 'DatascopeFilter')],
@@ -21,17 +25,13 @@ var TestElement = React.createClass({
         console.log('mounted TestComponent', this.props)
     },
     render() {
-        React.Children.forEach(this.props.children, (child) => console.log(child.type))
         return <div>
-
             {this.props.data.map(d => {
                 return _.map(this.props.schema.items.properties, (propSchema, key) => {
                     return <div><strong>{propSchema.title}: </strong>{d[key]}</div>
                 }).concat(<hr/>);
             })}
-
         </div>
-
     }
 });
 
@@ -66,25 +66,20 @@ var App = React.createClass({
                 <LocalDatascope
                     data={mockData.data}
                     schema={mockData.schema}
+                    fields={mockData.fields}
                     >
                     <Datascope>
+                        <Paginator />
 
-                        <TestElement>
-                        </TestElement>
-                        <h1>Other elements can go inside Datascope...</h1>
+                        <DataList />
+
                         <SimpleDataTable>
                             <SimpleDataTableColumn name="first_name" />
+                            <SimpleDataTableColumn name="last_name" />
+                            <SimpleDataTableColumn name="username" />
                         </SimpleDataTable>
 
-                        <div>
-                            <SimpleDataTable>
-                                <SimpleDataTableColumn name="first_name" />
-                            </SimpleDataTable>
-                        </div>
-
-
                         <SimpleDataTable></SimpleDataTable>
-
                     </Datascope>
                 </LocalDatascope>
             </div>

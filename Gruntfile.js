@@ -30,7 +30,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src',
-                    src: ['*.js', '*.jsx'],
+                    src: ['**/*.js', '**/*.jsx'],
                     dest: 'lib',
                     ext: '.js'
                 }]
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 
         watch: {
             build: {
-                files: 'src/*.*',
+                files: 'src/**/*.*',
                 tasks: ['build', 'shell:sayBuiltJs']
             }
         },
@@ -80,6 +80,8 @@ module.exports = function(grunt) {
 
     });
 
+
+    grunt.registerTask('dev', ['build', 'watch']);
 
     grunt.registerTask('serve', function(target) {
         return grunt.task.run(['webpack-dev-server']);

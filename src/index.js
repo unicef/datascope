@@ -4,6 +4,8 @@ module.exports = {
 
     InterfaceMixin: require('./InterfaceMixin'),
 
+    DataList: require('./modules/DataList'),
+
     DataTable: require('./modules/DataTable'),
     SimpleDataTable: require('./modules/SimpleDataTable'),
     SimpleDataTableColumn: require('./modules/SimpleDataTableColumn'),
@@ -12,5 +14,7 @@ module.exports = {
     FilterInputCheckbox: require('./modules/FilterInputCheckbox'),
     FilterInputRadio: require('./modules/FilterInputRadio'),
 
-    SearchBar: require('./modules/SearchBar')
+    SearchBar: require('./modules/SearchBar'),
+
+    Paginator: require('./modules/Paginator')
 };

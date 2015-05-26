@@ -1,5 +1,7 @@
 var _ = require('lodash'),
-    React = require('react/addons');
+    React = require('react/addons'),
+    moment = require('moment'),
+    numeral = require('numeral');
 
 const PropTypes = React.PropTypes;
 
@@ -36,13 +38,19 @@ var Datascope = React.createClass({
         }
     },
 
+    componentWillMount() {
+        // generate fields from schema properties, but override them with any passed in this.props.fields
+        //var fields = _.assign({}, fieldsFromSchema(this.props.schema), this.props.fields);
+        var {fields, orderedFields} = initFields(this.props.fields, this.props.schema);
+        this.setState({fields, orderedFields});
+    },
+
     onChangeSearch(searchId, value, fields) {
         var query = !_.isObject(this.props.query.search) ?
             React.addons.update(this.props.query, {search: {$set: {[searchId]: {value, fields}}}}) :
             React.addons.update(this.props.query, {search: {[searchId]: {$set: {value, fields}}}});
 
         this.props.onChangeQuery(query);
-        //this.forceUpdate();
     },
     onChangeSort(key, order) {
         order = order || 'descending';
@@ -50,7 +58,6 @@ var Datascope = React.createClass({
         var query = React.addons.update(this.props.query, {sort: {$set: sortObj}});
 
         this.props.onChangeQuery(query);
-        //this.forceUpdate();
     },
     onChangeFilter(key, filterObj) {
         console.log('new filter', filterObj);
@@ -59,12 +66,15 @@ var Datascope = React.createClass({
             React.addons.update(this.props.query, {filter: {$merge: {[key]: filterObj}}});
 
         this.props.onChangeQuery(query);
-        //this.forceUpdate();
+    },
+    onChangePagination(pagination) {
+        var query = React.addons.update(this.props.query, {pagination: {$set: pagination}});
+        this.props.onChangeQuery(query);
     },
 
     render() {
         const query = this.props.query;
-        const {onChangeSearch, onChangeSort, onChangeFilter} = this;
+        const {onChangeSearch, onChangeSort, onChangeFilter, onChangePagination} = this;
         const allProps = _.assign(
             _.pick(this.props, ['data', 'schema', 'query']),
             {onChangeSearch, onChangeSort, onChangeFilter},
@@ -74,8 +84,12 @@ var Datascope = React.createClass({
                 sortOrder: query.sort ? query.sort.order : null
             }
         );
-        const datascopeProps = _.pick(this.props, ['data', 'schema', 'query']);
 
+        const {fields, orderedFields} = this.state;
+        const datascopeProps = _.assign({},
+            _.pick(this.props, ['data', 'schema', 'query']),
+            {fields, orderedFields}
+        );
         const sortProps = {onChangeSort,
             sort: _.isObject(query.sort) ? query.sort : {},
             sortKey: query.sort ? query.sort.key : null,
@@ -83,53 +97,28 @@ var Datascope = React.createClass({
         };
         const filterProps = {onChangeFilter, filter: _.isObject(query.filter) ? query.filter : {}};
         const searchProps = {onChangeSearch};
-
-
-        //console.log('consumerProps', datascopeProps, sortProps, filterProps, searchProps);
-
-        // Recursively traverse children, cloning Datascope modules and adding their required props
-        // React 0.14 should introduce a new feature: parent-based contexts
-        // When 0.14 lands, we should be able to use context for this instead
-        return <div>
-            {this.recursiveCloneChildren(this.props.children, datascopeProps, sortProps, filterProps, searchProps)}
-        </div>
-
-        //return <div>
-        //    {React.Children.map(this.props.children, child => {
-        //        var childImplements = _.isFunction(child.type.implementsInterface) ?
-        //            child.type.implementsInterface : () => false;
-        //        var query = this.props.query;
-        //        var propsToPass = _.pick(this.props, ['data', 'schema', 'query']);
-        //
-        //        if(childImplements('DatascopeSearch')) {
         //            var searchQuery = _.isObject(query.search) ? query.search[child.props.id] : undefined;
         //            var searchValue = _.isObject(searchQuery) ? searchQuery.value || '' : '';
         //            propsToPass.onChangeSearch = this.onChangeSearch;
         //            propsToPass.value = searchValue;
-        //        }
-        //
-        //        if(childImplements('DatascopeSort')) {
-        //            propsToPass.sortKey = query.sort ? query.sort.key : null;
-        //            propsToPass.sortOrder = query.sort ? query.sort.order : null;
-        //            propsToPass.onChangeSort = this.onChangeSort;
-        //        }
-        //        if(childImplements('DatascopeFilter')) {
-        //            propsToPass.filter = _.isObject(query.filter) ? query.filter : {};
-        //            propsToPass.onChangeFilter = this.onChangeFilter;
-        //        }
-        //
-        //        console.log('passing from datascope', propsToPass);
-        //        return React.addons.cloneWithProps(child, propsToPass);
-        //        //return React.cloneElement(child, propsToPass);
-        //    })}
-        //</div>;
-    },
-    recursiveCloneChildren(children, datascopeProps, sortProps, filterProps,  searchProps) {
-        return React.Children.map(children, child => {
 
+        const paginationProps = {
+            onChangePagination,
+            pagination: _.isObject(query.pagination) ? query.pagination : {}
+        };
+
+        // Recursively traverse children, cloning Datascope modules and adding their required props
+        // React 0.14 should introduce a new feature: parent-based contexts
+        // When 0.14 lands, we may be able to use context for this instead
+        return <div>
+            {this.recursiveCloneChildren(this.props.children,
+                datascopeProps, sortProps, filterProps, searchProps, paginationProps)}
+        </div>;
+    },
+    recursiveCloneChildren(children, datascopeProps, sortProps, filterProps, searchProps, paginationProps) {
+        return React.Children.map(children, child => {
             if(!_.isObject(child)) return child;
 
-            console.log('traversing ', child.type.displayName || child.type);
             const childImplements = _.isFunction(child.type.implementsInterface) ?
                 child.type.implementsInterface : () => false;
             var childProps = {};
@@ -138,21 +127,72 @@ var Datascope = React.createClass({
                 childProps = _.extend(childProps, datascopeProps,
                     childImplements('DatascopeSort') ? sortProps : null,
                     childImplements('DatascopeFilter') ? filterProps : null,
-                    childImplements('DatascopeSearch') ? searchProps : null
+                    childImplements('DatascopeSearch') ? searchProps : null,
+                    childImplements('DatascopePagination') ? paginationProps : null
                 );
                 console.log('Datascope child ', childProps);
-                //child = React.cloneElement(child, childProps);
             }
 
             childProps.children = this.recursiveCloneChildren(child.props.children,
                 datascopeProps, sortProps, filterProps, searchProps);
 
             return React.cloneElement(child, childProps);
-            //return child;
         })
     }
 });
 
+
+var fieldDefaults = {
+    numberFormat: '0,0',
+    dateFormat: '',
+    test: 'd',
+    renderers: {
+        string: _.identity,
+        boolean: function defaultBooleanRenderer(v) { return v+''; },
+        number: function defaultNumberRenderer(v) { return v+''; },
+        null: function defaultNullRenderer(v) { return v+''; },
+        array: function defaultArrayRenderer(v) { return v && v.length ? v.join(', ') : v+''; }
+    }
+};
+
+function initFields(definedFields, schema) {
+    var fields = fieldsFromSchema(schema);
+
+    _.each(definedFields, (definedField, fieldKey) => {
+        if(!fieldKey in fields) return; // todo allow additional fields with key prop
+        // fill in unknown (implicit) parts of defined fields
+        var fieldSchema = schema.items.properties[fieldKey];
+        var fieldProps = _.pick(definedField, ['title', 'weight', 'renderer', 'format']);
+        fieldProps.name = fieldKey;
+        fieldProps.key = fieldKey;
+        if(fieldProps.format && !fieldProps.renderer) {
+            if(fieldSchema.type === 'number' || fieldSchema.type === 'integer') {
+                fieldProps.renderer = (v, field) => numeral(v).format(fieldProps.format);
+            } else if(fieldSchema.type === 'string' && fieldSchema.format === 'date-time') {
+                fieldProps.renderer = (v, field) => moment(v).format(fieldProps.format);
+            }
+        }
+        // override the default field props (from schema) with user-provided field props
+        _.assign(fields[fieldKey], fieldProps);
+    });
+
+    var orderedFields = _.sortBy(fields, 'weight');
+
+    return {fields, orderedFields};
+}
+
+function fieldsFromSchema(schema) {
+    if(!schema || !schema.items || !schema.items.properties) return [];
+    return _(schema.items.properties).map((propSchema, key) => {
+        return [key, {
+            title: propSchema.title || key,
+            key: key,
+            name: key,
+            renderer: (propSchema.type && propSchema.type in fieldDefaults.renderers) ?
+                fieldDefaults.renderers[propSchema.type] : v => v+''
+        }]
+    }).object().value();
+}
 
 // datascope will keep a query object in state which represents all the rules by which the data will be displayed:
 // `fields` limits which data fields are used

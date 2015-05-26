@@ -27,6 +27,29 @@
 // takes a list of strings ['a','b','c'] and creates an object like {a:'a', b:'b', c:'c'}
 
 module.exports = {
+    fields: {
+        first_name: {
+            weight: 1,
+            title: "First Name"
+        },
+        last_name: { weight: 2 },
+        username: { weight: 3 },
+        date_joined: {
+            title: 'Date Joined', // can override the schema's title for display purposes
+            weight: 4, // lower weight = higher sort order
+            format: 'MMM D, YYYY', // momentjs formatting for dates, numeraljs for numbers (?)
+            //renderer: function(value, field, {moment, numeral}) { // custom renderer method
+            //    //return moment(value).calendar()
+            //    return moment(value).format('MMMM Do YYYY, h:mm:ss a');
+            //}
+        },
+        password: {
+            renderer: function() { return '******'; }
+        },
+        last_login: {
+            format: 'MMM D, YYYY'
+        }
+    },
     schema: {
         "$schema": "http://json-schema.org/draft-04/schema#",
         title: "Users",
@@ -89,10 +112,10 @@ module.exports = {
                         weightTable: 7
                     },
                     items: {
-                        oneOf: [ // oneOf matches one of multiple schemas, enum matches one of values
+                        enum: [ // oneOf matches one of multiple schemas, enum matches one of values
                             {
                                 title: "UNICEF HQ",
-                                enum: [1]
+                                value: 1
                             }
                         ]
                     }
@@ -150,7 +173,8 @@ module.exports = {
                     maxLength: null,
                     title: "last_login",
                     editable: true,
-                    type: "datetime",
+                    type: "string",
+                    format: "date-time",
                     display: {
                         weightForm: 14,
                         on_table: true,
