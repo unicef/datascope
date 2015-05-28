@@ -67,9 +67,17 @@ var App = React.createClass({
                     data={mockData.data}
                     schema={mockData.schema}
                     fields={mockData.fields}
+                    paginated={true}
+                    pageSize={3}
                     >
                     <Datascope>
                         <Paginator />
+
+                        <SearchBar
+                            id="search-all"
+                            fields={searchableFieldNames}
+                            placeholder="all fields"
+                            />
 
                         <DataList />
 

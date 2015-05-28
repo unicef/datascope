@@ -7,7 +7,7 @@ var SearchBar = React.createClass({
     propTypes: {
         onChangeSearch: React.PropTypes.func, // required
         id: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
-        fields: React.PropTypes.array,
+        fieldNames: React.PropTypes.array,
         value: React.PropTypes.string
     },
 
@@ -19,11 +19,11 @@ var SearchBar = React.createClass({
 
 
     onChangeSearch(e) {
-        this.props.onChangeSearch(this.props.id, e.target.value, this.props.fields);
+        this.props.onChangeSearch(this.props.id, e.target.value, this.props.fieldNames);
     },
 
     render() {
-        const propsToPass = _.omit(this.props, ['id', 'fields', 'value', 'onChangeSearch']);
+        const propsToPass = _.omit(this.props, ['id', 'fieldNames', 'value', 'onChangeSearch']);
         return <div>
             <input
                 type="text"

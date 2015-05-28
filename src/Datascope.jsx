@@ -12,8 +12,8 @@ const PropTypes = React.PropTypes;
 
 var Datascope = React.createClass({
     propTypes: {
-        data: PropTypes.array,
-        schema: PropTypes.shape({
+        data: PropTypes.array, // the (filtered/searched/sorted/paginated) data to display
+        schema: PropTypes.shape({ // json-schema representing the shape of the data
             items: PropTypes.shape({
                 properties: PropTypes.object
             })
@@ -68,6 +68,7 @@ var Datascope = React.createClass({
         this.props.onChangeQuery(query);
     },
     onChangePagination(pagination) {
+        // todo keep all the pagination things in sync - let paginator just change page and auto update the rest
         var query = React.addons.update(this.props.query, {pagination: {$set: pagination}});
         this.props.onChangeQuery(query);
     },
@@ -97,10 +98,6 @@ var Datascope = React.createClass({
         };
         const filterProps = {onChangeFilter, filter: _.isObject(query.filter) ? query.filter : {}};
         const searchProps = {onChangeSearch};
-        //            var searchQuery = _.isObject(query.search) ? query.search[child.props.id] : undefined;
-        //            var searchValue = _.isObject(searchQuery) ? searchQuery.value || '' : '';
-        //            propsToPass.onChangeSearch = this.onChangeSearch;
-        //            propsToPass.value = searchValue;
 
         const paginationProps = {
             onChangePagination,
@@ -124,13 +121,21 @@ var Datascope = React.createClass({
             var childProps = {};
 
             if(childImplements('Datascope')) {
+                if(childImplements('DatascopeSearch')) {
+                    var searchQuery = _.isObject(datascopeProps.query.search) ?
+                        datascopeProps.query.search[child.props.id] : undefined;
+                    var searchValue = _.isObject(searchQuery) ? searchQuery.value || '' : '';
+                    searchProps = _.assign({}, searchProps, {
+                        value: searchValue
+                    })
+                }
+
                 childProps = _.extend(childProps, datascopeProps,
                     childImplements('DatascopeSort') ? sortProps : null,
                     childImplements('DatascopeFilter') ? filterProps : null,
                     childImplements('DatascopeSearch') ? searchProps : null,
                     childImplements('DatascopePagination') ? paginationProps : null
                 );
-                console.log('Datascope child ', childProps);
             }
 
             childProps.children = this.recursiveCloneChildren(child.props.children,

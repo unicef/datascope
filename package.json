@@ -6,6 +6,7 @@
   "private": true,
   "main": "lib/index.js",
   "dependencies": {
+    "classnames": "^2.1.1",
     "fixed-data-table": "^0.1.2",
     "lodash": ">=3.8.0",
     "moment": "^2.10.2",

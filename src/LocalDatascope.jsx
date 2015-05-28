@@ -10,57 +10,56 @@ var LocalDatascope = React.createClass({
     },
     getDefaultProps() {
         return {
-            pageSize: 5
+            paginated: true,
+            pageSize: 200
         }
     },
     getInitialState() {
         return {
             displayData: _.clone(this.props.data),
-            query: {}
+            query: this.props.initialQuery || {}
         }
     },
 
     componentWillMount() {
-        if(!this.props.pageSize || this.state.query.pagination) { return; }
-        var query = React.addons.update(this.state.query,
-            {pagination: {$set: {page: 1, offset: 0, limit: this.props.pageSize}}});
+        let query = this.state.query;
+        if(this.props.paginated) {
+            // initialize pagination
+            query = React.addons.update(query, {pagination: {$set:
+                {page: 1, offset: 0, limit: this.props.pageSize, total: this.props.data.length}
+            }});
+        }
+        //if(!this.props.pageSize || this.state.query.pagination) { return; }
         console.log(query);
 
-        let {newQuery, displayData} = this._getDisplayData(query);
-        this.setState({query: newQuery, displayData});
+        this.setState(this._getDisplayData(query));
     },
 
     _getDisplayData(query) {
         const hasFilter = _.isObject(query.filter) && _.keys(query.filter).length;
         const hasSearch = _.isObject(query.search) && _.keys(query.search).length;
         const hasSort = query.sort && !_.isUndefined(query.sort.key);
-        const hasPagination = _.isObject(query.pagination) && query.pagination.page && query.pagination.limit;
+        const hasPagination = _.isObject(query.pagination);
 
         let displayData = _.clone(this.props.data);
-        let newQuery = query;
 
         displayData = hasFilter ? this._filterData(displayData, query.filter) : displayData;
         displayData = hasSearch ? this._searchData(displayData, query.search) : displayData;
         displayData = hasSort ? this._sortData(displayData, query.sort) : displayData;
-
         if(hasPagination) {
-            // if pagination is past the end of newly-filtered data,
-            // reset it to the last page which actually contains data
-            if(query.pagination.offset >= displayData.length) {
-                const lastPage = Math.floor(displayData.length / query.pagination.limit) + 1;
-                const lastOffset = (lastPage - 1) * query.pagination.limit;
-                const newPagination = {page: lastPage, offset: lastOffset, limit: query.pagination.limit };
-                newQuery = React.addons.update(this.state.query, {pagination: {$set: newPagination}});
-            }
-            let pagination = newQuery.pagination;
-            // then trim the data to paginate
-            var pageEndIndex = Math.min(pagination.offset + pagination.limit - 1, displayData.length - 1);
-            displayData = displayData.slice(pagination.offset, pageEndIndex + 1);
+            let paginated = this._paginateData(displayData, query.pagination);
+            displayData = paginated.data;
+            query = _.assign({}, query, {pagination: paginated.pagination})
         }
 
-        return {newQuery: newQuery, displayData: displayData};
+        return {query, displayData};
     },
 
+    _filterData(data, filterQuery) {
+        return _.filter(data, d => {
+            return _.all(filterQuery, (filterObj, key) => matchesFilter(d, filterObj, key));
+        })
+    },
     _searchData(data, searchQueries) {
         const propSchemas = this.props.schema.items.properties;
         const stringFieldKeys = _(propSchemas).keys()
@@ -72,11 +71,10 @@ var LocalDatascope = React.createClass({
                     return (d[key] + '').toLowerCase().indexOf(searchQuery.value.toLowerCase()) > -1;
                 })
             });
-
         })
     },
     _sortData(data, sortQuery) {
-        // WARNING this mutates the data array
+        // WARNING this mutates the data array so call it with a copy
         //return _.sortBy(data, sortQuery.key);
         return data.sort((a, b) => {
             var key = sortQuery.key,
@@ -86,31 +84,44 @@ var LocalDatascope = React.createClass({
             return comparator(a[key], b[key]) * order;
         })
     },
-    _filterData(data, filterQuery) {
-        return _.filter(data, d => {
-            return _.all(filterQuery, (filterObj, key) => matchesFilter(d, filterObj, key));
-        })
-    },
+    _paginateData(data, pagination) {
+        // if pagination is past the end of newly-filtered data,
+        // reset it to the last page which actually contains data
+        let newPagination;
+        if(pagination.offset >= data.length) {
+            const lastPage = Math.floor(data.length / pagination.limit) + 1;
+            const lastOffset = (lastPage - 1) * pagination.limit;
+            newPagination = {
+                page: lastPage,
+                offset: lastOffset,
+                limit: pagination.limit,
+                total: data.length
+            };
+        } else {
+            newPagination = _.assign({}, pagination, {total: data.length});
+        }
 
-    _paginateData(data, paginationQuery) {
+        // trim the data to paginate from [offset] to [offset + limit]
+        let pageEndIndex = Math.min(newPagination.offset + newPagination.limit - 1, data.length - 1);
+        let newData = data.slice(newPagination.offset, pageEndIndex + 1);
 
+        return {data: newData, pagination: newPagination};
     },
 
     onChangeQuery(query) {
         console.log('new query', query);
-        var {newQuery, displayData} = this._getDisplayData(query);
-        this.setState({query: newQuery, displayData});
+        let newState = this._getDisplayData(query);
+        this.setState(newState);
     },
 
     render() {
-        return <div>
+        return <div className="local-datascope">
             {React.Children.map(this.props.children, child => {
-                var propsToPass =  _.omit(this.props, ['children']);
-                propsToPass.onChangeQuery = this.onChangeQuery;
-                propsToPass.data = this.state.displayData;
-                propsToPass.query = this.state.query;
-                //return React.addons.cloneWithProps(child, propsToPass);
-                return React.cloneElement(child, propsToPass);
+                return React.cloneElement(child, _.assign({}, _.omit(this.props, ['children']), {
+                    onChangeQuery: this.onChangeQuery,
+                    data: this.state.displayData,
+                    query: this.state.query
+                }));
             })}
         </div>
     }
