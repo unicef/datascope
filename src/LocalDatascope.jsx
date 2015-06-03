@@ -147,6 +147,10 @@ function matchesFilter(objToTest, filter, key) {
     if(_.isNumber(filter.gt) || _.isNumber(filter.lt)) {
         return ('gt' in filter ? value >= filter.gt : true) &&
                ('lt' in filter ? value <= filter.lt : true);
+    } else if(_.isDate(filter.gt) || _.isNumber(filter.lt)) {
+        console.log('filtering date');
+        return ('gt' in filter ? new Date(value) >= filter.gt : true) &&
+                ('lt' in filter ? new Date(value) <= filter.lt : true);
     }
     return true;
 }

@@ -1,9 +1,14 @@
 require('babel/polyfill');
 require('./../styles/main.css');
 require('./../styles/fixed-data-table.css');
+//require('./../styles/variables.css');
+//require('./../styles/core.css');
+//require('./../styles/react-widgets.css');
+
 
 var _ = require('lodash'),
     React = require('react/addons');
+
 
 var {
     Datascope, LocalDatascope,
@@ -12,6 +17,7 @@ var {
     SimpleDataTable, SimpleDataTableColumn,
     SearchBar,
     FilterPanel, FilterInputRadio, FilterInputCheckbox,
+    FilterDateRange,
     Paginator
 } = require('../../src');
 
@@ -79,12 +85,17 @@ var App = React.createClass({
                             placeholder="all fields"
                             />
 
+                        <FilterPanel>
+                            <FilterDateRange name="date_joined" />
+                        </FilterPanel>
+
                         <DataList />
 
                         <SimpleDataTable>
                             <SimpleDataTableColumn name="first_name" />
                             <SimpleDataTableColumn name="last_name" />
                             <SimpleDataTableColumn name="username" />
+                            <SimpleDataTableColumn name="edit_link" />
                         </SimpleDataTable>
 
                         <SimpleDataTable></SimpleDataTable>

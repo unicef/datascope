@@ -48,6 +48,11 @@ module.exports = {
         },
         last_login: {
             format: 'MMM D, YYYY'
+        },
+        edit_link: {
+            title: "Edit",
+            key: 'id',
+            renderer: function() { return 'edit me'; }
         }
     },
     schema: {

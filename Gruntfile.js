@@ -73,6 +73,7 @@ module.exports = function(grunt) {
                 port: 5709,
                 webpack: webpackExamplesConfig,
                 publicPath: webpackExamplesConfig.output.publicPath,
+                contentBase: 'examples/',
                 historyApiFallback: true,
                 keepalive: true
             }

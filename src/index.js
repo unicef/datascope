@@ -13,6 +13,7 @@ module.exports = {
     FilterPanel: require('./modules/FilterPanel'),
     FilterInputCheckbox: require('./modules/FilterInputCheckbox'),
     FilterInputRadio: require('./modules/FilterInputRadio'),
+    FilterDateRange: require('./modules/FilterDateRange'),
 
     SearchBar: require('./modules/SearchBar'),
 

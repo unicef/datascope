@@ -26,17 +26,19 @@ var FilterPanel = React.createClass({
     },
 
     render() {
-        const fieldSchemasByName = _.indexBy(this.props.schema.fields, 'name');
+        //const fieldSchemasByName = _.indexBy(this.props.schema.items.properties, 'name');
+        const propSchemas = this.props.schema.items.properties;
         return (
             <div className="datascope-filter-panel">
                 {React.Children.map(this.props.children, child => {
-                    const childKey = child.props.field;
+                    const childKey = child.props.name;
 
                     console.log('FilterInput props', this.props);
                     var propsToPass = {
-                        onChange: this.onChangeFilterInput,
+                        //name: childKey,
+                        schema: propSchemas[childKey],
                         filter: this.props.filter[childKey],
-                        schema: fieldSchemasByName[childKey]
+                        onChange: this.onChangeFilterInput.bind(this, childKey)
                     };
 
                     console.log('passing to filter input', propsToPass);

@@ -3,21 +3,6 @@ var _ = require('lodash'),
 
 const { PropTypes } = React;
 
-var RadioGroup = React.createClass({
-    render: function() {
-        return (
-            <div {..._.omit(this.props, 'onChange')}>
-                {React.Children.map(this.props.children, child => {
-                    var propsToPass = _.pick(this.props, 'name');
-                    propsToPass.checked = (this.props.value !== null) && (this.props.value === child.props.value);
-                    propsToPass.onClick = this.props.onChange.bind(null, child.props.value);
-                    return React.cloneElement(child, propsToPass)
-                })}
-            </div>
-        );
-    }
-});
-
 var FilterInputCheckbox = React.createClass({
     propTypes: {
         // schema describing the field
