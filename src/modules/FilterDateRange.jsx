@@ -40,7 +40,7 @@ export default React.createClass({
         // todo if neither exist, use schema key (pass from parent as another prop?)
         return _.isString(this.props.title) ? this.props.title :
             _.isObject(this.props.schema) && _.has(this.props.schema, 'title') ?
-                this.props.schema.title : null;
+                this.props.schema.title : this.props.name;
     },
 
     onChangeDate(date, dateString) {
