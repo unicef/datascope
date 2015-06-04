@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');
+var cx = require('classnames');
 var moment = require('moment');
 var numeral = require('numeral');
 var PropTypes = React.PropTypes;
@@ -114,7 +115,7 @@ var SimpleDataTable = React.createClass({
         );
 
         var renderRow = _.partial(this.renderRow, columns);
-        return <table>
+        return <table className={cx(['ds-data-table', {'ds-data-table-sortable': this.props.sortable}])}>
             <thead>
                 <tr>
                     {React.Children.map(columns, this.renderColumnHeader)}

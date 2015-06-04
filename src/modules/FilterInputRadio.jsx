@@ -86,15 +86,24 @@ const FilterInputRadio = React.createClass({
     render() {
         const value = this._getSelectedValue();
 
-        return <div>
-            <div>{this._getLabel()}</div>
+        return <div className="ds-radio-filter">
+            <div className="ds-radio-filter-title">
+                {this._getLabel()}
+            </div>
 
-            <RadioGroup ref='group' name={this.props.name} value={value} onChange={this.onClickRadio}>
+            <RadioGroup
+                className="ds-radio-group"
+                ref='group'
+                name={this.props.name}
+                value={value}
+                onChange={this.onClickRadio}
+                >
                 {this._getValues().map(value => {
                     var label = (_.has(value, 'label') ? value.label : value) + '';
                     value = (_.has(value, 'value') ? value.value : value);
                     return (
                         <input
+                            className="ds-radio-input"
                             type="radio"
                             value={value}
                             >
