@@ -1,9 +1,8 @@
-var _ = require('lodash'),
-    React = require('react/addons');
-
+import _ from 'lodash';
+import React from 'react/addons';
 const { PropTypes } = React;
 
-var RadioGroup = React.createClass({
+const RadioGroup = React.createClass({
     render: function() {
         return (
             <div {..._.omit(this.props, 'onChange')}>
@@ -18,10 +17,10 @@ var RadioGroup = React.createClass({
     }
 });
 
-var FilterInputRadio = React.createClass({
+const FilterInputRadio = React.createClass({
     propTypes: {
         // schema describing the field
-        schema: PropTypes.shape({
+        schemaold: PropTypes.shape({
             name: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
             title: PropTypes.string,
             type: PropTypes.string,
@@ -29,9 +28,12 @@ var FilterInputRadio = React.createClass({
                 oneOf: PropTypes.array
             })
         }),
+
+        schema: PropTypes.object,
+
         filter: PropTypes.object,
 
-        // provide name, label, values to override the schema
+        // provide name, label, values optionally to override the schema
         // unique name for this collection of radio buttons (for name attribute)
         name: PropTypes.string,
         // human-readable label for this collection of radio buttons
@@ -52,25 +54,23 @@ var FilterInputRadio = React.createClass({
     componentWillReceiveProps() { this._validateProps() },
 
     _validateProps() {
-        if(_.isNull(this._getName())) throw "FilterInputRadio requires schema or `name` prop";
-        if(_.isNull(this._getValues())) throw "FilterInputRadio requires schema or `values` prop";
-    },
-    _getName() {
-        return _.isString(this.props.name) ? this.props.name :
-            _.isObject(this.props.schema) && _.has(this.props.schema, 'name') ?
-                this.props.schema.name : null;
+        if(!this.props.name) throw "FilterInputRadio requires a `name` prop";
+        if(_.isNull(this._getValues())) throw "FilterInputRadio requires valid schema or `values` prop";
     },
     _getLabel() {
         return _.isString(this.props.label) ? this.props.label :
             _.isObject(this.props.schema) && _.has(this.props.schema, 'label') ?
-                this.props.schema.title : this._getName();
+                this.props.schema.title : this.props.name;
     },
     _getValues() {
         const schema = this.props.schema;
         return _.isArray(this.props.values) ? this.props.values : // use values if passed
             schema && schema.type === 'boolean' ? [true, false] : // if type boolean, values are true/false
-            schema && schema.constraints && _.isArray(schema.constraints.oneOf) ?
-                schema.constraints.oneOf : null; // values are schema.constraints.oneOf
+            schema && schema.enum ? schema.type.enum : // enumerated values
+            schema && schema.oneOf && // another way of enumerating values, which puts the labels in the schema instead
+                _.every(schema.oneOf, s => _.has(s, 'enum') && s.enum.length == 1) ?
+                schema.oneOf.map(aSchema => aSchema.enum[0]) : // todo: deal with labels for this type
+            null;
     },
     _getSelectedValue() {
         return _.isObject(this.props.filter) && _.has(this.props.filter, 'eq') ?
@@ -80,17 +80,16 @@ var FilterInputRadio = React.createClass({
     onClickRadio(value, e) {
         const newFilter = this.props.shouldDeselect && value === this._getSelectedValue() ?
             {} : {eq: value};
-        this.props.onChange(this._getName(), newFilter);
+        this.props.onChange(newFilter);
     },
 
     render() {
-        const name = this._getName();
         const value = this._getSelectedValue();
 
         return <div>
             <div>{this._getLabel()}</div>
 
-            <RadioGroup ref='group' name={this._getName()} value={value} onChange={this.onClickRadio}>
+            <RadioGroup ref='group' name={this.props.name} value={value} onChange={this.onClickRadio}>
                 {this._getValues().map(value => {
                     var label = (_.has(value, 'label') ? value.label : value) + '';
                     value = (_.has(value, 'value') ? value.value : value);
@@ -98,7 +97,7 @@ var FilterInputRadio = React.createClass({
                         <input
                             type="radio"
                             value={value}
-                        >
+                            >
                             {label}
                         </input>
                     )
@@ -109,4 +108,4 @@ var FilterInputRadio = React.createClass({
     }
 });
 
-module.exports = FilterInputRadio;
+export default FilterInputRadio;

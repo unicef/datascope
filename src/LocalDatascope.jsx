@@ -22,15 +22,12 @@ var LocalDatascope = React.createClass({
     },
 
     componentWillMount() {
-        let query = this.state.query;
-        if(this.props.paginated) {
-            // initialize pagination
+        let {query} = this.state;
+        if(this.props.paginated) { // initialize pagination
             query = React.addons.update(query, {pagination: {$set:
                 {page: 1, offset: 0, limit: this.props.pageSize, total: this.props.data.length}
             }});
         }
-        //if(!this.props.pageSize || this.state.query.pagination) { return; }
-        console.log(query);
 
         this.setState(this._getDisplayData(query));
     },
@@ -109,7 +106,7 @@ var LocalDatascope = React.createClass({
     },
 
     onChangeQuery(query) {
-        console.log('new query', query);
+        //console.log('new query', query);
         let newState = this._getDisplayData(query);
         this.setState(newState);
     },
@@ -148,7 +145,6 @@ function matchesFilter(objToTest, filter, key) {
         return ('gt' in filter ? value >= filter.gt : true) &&
                ('lt' in filter ? value <= filter.lt : true);
     } else if(_.isDate(filter.gt) || _.isNumber(filter.lt)) {
-        console.log('filtering date');
         return ('gt' in filter ? new Date(value) >= filter.gt : true) &&
                 ('lt' in filter ? new Date(value) <= filter.lt : true);
     }

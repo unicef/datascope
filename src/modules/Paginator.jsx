@@ -1,7 +1,7 @@
-var _ = require('lodash'),
-    React = require('react/addons'),
-    cx = require('classnames'),
-    InterfaceMixin = require('./../InterfaceMixin');
+import _ from 'lodash';
+import React from 'react/addons';
+import cx from 'classnames';
+import InterfaceMixin from './../InterfaceMixin';
 
 var Paginator = React.createClass({
     mixins: [InterfaceMixin('Datascope', 'DatascopePagination')],
@@ -18,7 +18,6 @@ var Paginator = React.createClass({
     },
 
     onClickPage(page) {
-        console.log('clicked page', page);
         const offset = this.props.pagination.limit * (page - 1);
         const pagination = _.extend({}, this.props.pagination, {offset, page});
         this.props.onChangePagination(pagination);
@@ -40,6 +39,7 @@ var Paginator = React.createClass({
 
         let pageNums = _.range(1, lastPage + 1);
         const shouldTruncate = truncateLimit && lastPage > truncateLimit;
+
         if(shouldTruncate) {
             pageNums = _([
                 _.range(1, truncatedSize+1), // first few
@@ -55,7 +55,6 @@ var Paginator = React.createClass({
             }, [])
         }
 
-        console.log('rendering page', thisPage);
         return <div className="datascope-paginator">
             {this.props.previousLabel ?
                 <span
@@ -91,12 +90,6 @@ var Paginator = React.createClass({
                 {minResult} to {maxResult} of {pagination.total}
             </div>
         </div>
-    },
-    renderPageLinks() {
-
-    },
-    renderPageLinksTruncated() {
-
     }
 });
 

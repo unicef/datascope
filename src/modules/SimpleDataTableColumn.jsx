@@ -3,7 +3,7 @@ var React = require('react/addons');
 var PropTypes = React.PropTypes;
 var InterfaceMixin = require('./../InterfaceMixin');
 
-console.log('hello?')
+
 var SimpleDataTableColumn = React.createClass({
     mixins: [InterfaceMixin('DataTableColumn')],
     propTypes: {

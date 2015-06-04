@@ -77,7 +77,6 @@ var App = React.createClass({
                     pageSize={3}
                     >
                     <Datascope>
-                        <Paginator />
 
                         <SearchBar
                             id="search-all"
@@ -87,7 +86,10 @@ var App = React.createClass({
 
                         <FilterPanel>
                             <FilterDateRange name="date_joined" />
+                            <FilterInputRadio name="is_superuser"/>
                         </FilterPanel>
+
+                        <Paginator />
 
                         <DataList />
 
@@ -99,6 +101,7 @@ var App = React.createClass({
                         </SimpleDataTable>
 
                         <SimpleDataTable></SimpleDataTable>
+
                     </Datascope>
                 </LocalDatascope>
             </div>

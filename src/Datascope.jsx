@@ -60,7 +60,6 @@ var Datascope = React.createClass({
         this.props.onChangeQuery(query);
     },
     onChangeFilter(key, filterObj) {
-        console.log('new filter', filterObj);
         var query = !_.isObject(this.props.query.filter) ?
             React.addons.update(this.props.query, {filter: {$set: {[key]: filterObj}}}) :
             React.addons.update(this.props.query, {filter: {$merge: {[key]: filterObj}}});

@@ -4,12 +4,10 @@ var moment = require('moment');
 var numeral = require('numeral');
 var InterfaceMixin = require('./../InterfaceMixin');
 
+// mostly for debugging, not fleshed out
 
 var DataList = React.createClass({
     mixins: [InterfaceMixin('Datascope', 'DatascopeSearch', 'DatascopeSort', 'DatascopeFilter')],
-    componentDidMount() {
-        console.log('mounted DataList', this.props, this.props.fields)
-    },
     render() {
         return <div>
             {this.props.data.map(d => {
