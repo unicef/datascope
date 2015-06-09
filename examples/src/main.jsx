@@ -85,7 +85,7 @@ var App = React.createClass({
                             />
 
                         <FilterPanel>
-                            <FilterDateRange name="date_joined" />
+                            <FilterDateRange name="date_joined" time={false} />
                             <FilterInputRadio name="is_superuser"/>
                         </FilterPanel>
 

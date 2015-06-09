@@ -10,13 +10,17 @@ export default React.createClass({
         schema: PropTypes.object,
         filter: PropTypes.object,
         onChange: PropTypes.func,
+        // include the minimum (after) part of the time range
         hasMin: PropTypes.bool,
+        // include the maximum (before) part of the time range
         hasMax: PropTypes.bool,
         showTitle: PropTypes.bool,
         preMinContent: PropTypes.node,
         postMinContent: PropTypes.node,
         preMaxContent: PropTypes.node,
-        postMaxContent: PropTypes.node
+        postMaxContent: PropTypes.node,
+        calendar: PropTypes.bool, // whether to show the date picker button
+        time: PropTypes.bool // whether to show the time picker button
     },
     getDefaultProps() {
         return {
@@ -69,7 +73,10 @@ export default React.createClass({
     },
 
     render() {
-        let {hasMin, hasMax, showTitle, preMinContent, postMinContent, preMaxContent, postMaxContent} = this.props;
+        let {
+            hasMin, hasMax, showTitle, calendar, time,
+            preMinContent, postMinContent, preMaxContent, postMaxContent
+        } = this.props;
         const hasContent = !_.every(preMinContent, postMinContent, preMaxContent, postMaxContent, _.isUndefined);
 
         if(!hasContent && hasMin && hasMax) {
@@ -80,6 +87,8 @@ export default React.createClass({
             preMaxContent = <span className="ds-date-range-pre-min">After</span>;
         }
 
+        const pickerProps = {calendar, time};
+
         const titleContent = showTitle ?
             <div className="ds-date-range-title">
                 {this._getTitle()}
@@ -88,14 +97,14 @@ export default React.createClass({
         const minContent = hasMin ?
             <div className="ds-date-range-min">
                 {preMinContent}
-                <DateTimePicker onChange={this.onChangeMinDate} />
+                <DateTimePicker onChange={this.onChangeMinDate} {...pickerProps} />
                 {postMinContent}
             </div> : null;
 
         const maxContent = hasMax ?
             <div className="ds-date-range-max">
                 {preMaxContent}
-                <DateTimePicker onChange={this.onChangeMaxDate} />
+                <DateTimePicker onChange={this.onChangeMaxDate} {...pickerProps} />
                 {postMaxContent}
             </div> : null;
 
