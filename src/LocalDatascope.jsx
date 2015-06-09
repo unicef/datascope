@@ -44,7 +44,7 @@ var LocalDatascope = React.createClass({
         displayData = hasSearch ? this._searchData(displayData, query.search) : displayData;
         displayData = hasSort ? this._sortData(displayData, query.sort) : displayData;
         if(hasPagination) {
-            let paginated = this._paginateData(displayData, query.pagination);
+            let paginated = this._paginateData(displayData, query);
             displayData = paginated.data;
             query = _.assign({}, query, {pagination: paginated.pagination})
         }
@@ -59,11 +59,11 @@ var LocalDatascope = React.createClass({
     },
     _searchData(data, searchQueries) {
         const propSchemas = this.props.schema.items.properties;
-        const stringFieldKeys = _(propSchemas).keys()
-            .filter(key => propSchemas[key].type === 'string').value();
+        const stringyFieldKeys = _(propSchemas).keys()
+            .filter(key => _.includes(['string', 'number'], propSchemas[key].type)).value();
         return _.filter(data, d => {
             return _.any(searchQueries, searchQuery => {
-                const searchableKeys = searchQuery.fields || stringFieldKeys;
+                const searchableKeys = searchQuery.fields || stringyFieldKeys;
                 return _.any(searchableKeys, key => {
                     return (d[key] + '').toLowerCase().indexOf(searchQuery.value.toLowerCase()) > -1;
                 })
@@ -81,28 +81,22 @@ var LocalDatascope = React.createClass({
             return comparator(a[key], b[key]) * order;
         })
     },
-    _paginateData(data, pagination) {
-        // if pagination is past the end of newly-filtered data,
-        // reset it to the last page which actually contains data
-        let newPagination;
-        if(pagination.offset >= data.length) {
-            const lastPage = Math.floor(data.length / pagination.limit) + 1;
-            const lastOffset = (lastPage - 1) * pagination.limit;
-            newPagination = {
-                page: lastPage,
-                offset: lastOffset,
-                limit: pagination.limit,
-                total: data.length
-            };
-        } else {
-            newPagination = _.assign({}, pagination, {total: data.length});
-        }
+    _paginateData(data, query) {
+        let {pagination} = query;
+        const prevQuery = this.state.query;
+
+        // if filter/search/sort changed, or pagination is past the end of data, reset to page 1 of results
+        const hasChanged = _.any(['filter', 'search', 'sort'], key => prevQuery[key] !== query[key]);
+        const isPastEnd = pagination.offset >= data.length;
+        pagination = (hasChanged || isPastEnd) ?
+            {page: 1, offset: 0, limit: pagination.limit, total: data.length} :
+            _.assign({}, pagination, {total: data.length});
 
         // trim the data to paginate from [offset] to [offset + limit]
-        let pageEndIndex = Math.min(newPagination.offset + newPagination.limit - 1, data.length - 1);
-        let newData = data.slice(newPagination.offset, pageEndIndex + 1);
+        const pageEndIndex = Math.min(pagination.offset + pagination.limit - 1, data.length - 1);
+        data = data.slice(pagination.offset, pageEndIndex + 1);
 
-        return {data: newData, pagination: newPagination};
+        return {data, pagination};
     },
 
     onChangeQuery(query) {
