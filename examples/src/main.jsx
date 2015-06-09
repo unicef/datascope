@@ -48,26 +48,6 @@ var App = React.createClass({
         var schemaIsActive = _.find(mockData.schema.items.properties, (prop) => prop.title === 'isActive');
         var searchableFieldNames = _(mockData.schema.items.properties).filter(f => f.searchable).pluck('name').value();
 
-        //<SearchBar
-        //    id="search-all"
-        //    fields={searchableFieldNames}
-        //    placeholder="all fields"
-        //    />
-        //<SearchBar
-        //id="search-first-name"
-        //fields={['first_name']}
-        //placeholder="first name"
-        //    />
-        //
-        //    <FilterPanel>
-        //        <FilterInputRadio field='isActive' />
-        //        <FilterInputCheckbox field='groups' />
-        //    </FilterPanel>
-
-        //<div>
-        //    <SimpleDataTable />
-        //</div>
-
         return (
             <div>
                 <LocalDatascope

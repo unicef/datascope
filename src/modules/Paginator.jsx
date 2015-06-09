@@ -56,7 +56,7 @@ var Paginator = React.createClass({
         }
 
         return <div className="datascope-paginator">
-            {this.props.previousLabel ?
+            {this.props.previousLabel && (thisPage != 1) ?
                 <span
                     className="page-link page-link-previous"
                     onClick={_.partial(this.onClickPage, previousPage)}
@@ -77,7 +77,7 @@ var Paginator = React.createClass({
                     </span>;
             })}
 
-            {this.props.nextLabel ?
+            {this.props.nextLabel && (thisPage != lastPage) ?
                 <span
                     className="page-link page-link-next"
                     onClick={_.partial(this.onClickPage, nextPage)}

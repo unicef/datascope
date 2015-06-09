@@ -34,7 +34,7 @@ const ClearQueryLink = React.createClass({
             query = React.addons.update(query, {pagination: {$merge: {page: 1, offset: 0}}});
 
         this.props.onChangeQuery(query);
-        return false;
+        //return false;
     },
 
     render() {
