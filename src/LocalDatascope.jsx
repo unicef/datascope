@@ -1,5 +1,6 @@
 var _ = require('lodash'),
-    React = require('react/addons');
+    React = require('react/addons'),
+    moment = require('moment');
 
 var LocalDatascope = React.createClass({
     propTypes: {
@@ -138,9 +139,9 @@ function matchesFilter(objToTest, filter, key) {
     if(_.isNumber(filter.gt) || _.isNumber(filter.lt)) {
         return ('gt' in filter ? value >= filter.gt : true) &&
                ('lt' in filter ? value <= filter.lt : true);
-    } else if(_.isDate(filter.gt) || _.isNumber(filter.lt)) {
-        return ('gt' in filter ? new Date(value) >= filter.gt : true) &&
-                ('lt' in filter ? new Date(value) <= filter.lt : true);
+    } else if(_.isDate(filter.gt) || _.isDate(filter.lt)) {
+        return ('gt' in filter ? moment(value) >= filter.gt : true) &&
+                ('lt' in filter ? moment(value) <= filter.lt : true);
     }
     return true;
 }
