@@ -75,19 +75,10 @@ var Datascope = React.createClass({
     render() {
         const query = this.props.query;
         const {onChangeSearch, onChangeSort, onChangeFilter, onChangePagination} = this;
-        const allProps = _.assign(
-            _.pick(this.props, ['data', 'schema', 'query']),
-            {onChangeSearch, onChangeSort, onChangeFilter},
-            {
-                filter: _.isObject(query.filter) ? query.filter : {},
-                sortKey: query.sort ? query.sort.key : null,
-                sortOrder: query.sort ? query.sort.order : null
-            }
-        );
 
         const {fields, orderedFields} = this.state;
         const datascopeProps = _.assign({},
-            _.pick(this.props, ['data', 'schema', 'query']),
+            _.pick(this.props, ['data', 'schema', 'query', 'onChangeQuery']),
             {fields, orderedFields}
         );
         const sortProps = {onChangeSort,

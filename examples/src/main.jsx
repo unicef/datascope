@@ -15,6 +15,7 @@ var {
     InterfaceMixin,
     DataList,
     SimpleDataTable, SimpleDataTableColumn,
+    ClearQueryLink,
     SearchBar,
     FilterPanel, FilterInputRadio, FilterInputCheckbox,
     FilterDateRange,
@@ -77,6 +78,10 @@ var App = React.createClass({
                     pageSize={3}
                     >
                     <Datascope>
+
+                        <ClearQueryLink>
+                            <a href="#">Clear filters</a>
+                        </ClearQueryLink>
 
                         <SearchBar
                             id="search-all"

@@ -97,14 +97,22 @@ export default React.createClass({
         const minContent = hasMin ?
             <div className="ds-date-range-min">
                 {preMinContent}
-                <DateTimePicker onChange={this.onChangeMinDate} {...pickerProps} />
+                <DateTimePicker
+                    onChange={this.onChangeMinDate}
+                    value={this.props.filter && this.props.filter.gt || null}
+                    {...pickerProps}
+                />
                 {postMinContent}
             </div> : null;
 
         const maxContent = hasMax ?
             <div className="ds-date-range-max">
                 {preMaxContent}
-                <DateTimePicker onChange={this.onChangeMaxDate} {...pickerProps} />
+                <DateTimePicker
+                    onChange={this.onChangeMaxDate}
+                    value={this.props.filter && this.props.filter.lt || null}
+                    {...pickerProps}
+                />
                 {postMaxContent}
             </div> : null;
 
