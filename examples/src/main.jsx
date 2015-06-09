@@ -45,9 +45,6 @@ var TestElement = React.createClass({
 
 var App = React.createClass({
     render() {
-        var schemaIsActive = _.find(mockData.schema.items.properties, (prop) => prop.title === 'isActive');
-        var searchableFieldNames = _(mockData.schema.items.properties).filter(f => f.searchable).pluck('name').value();
-
         return (
             <div>
                 <LocalDatascope
@@ -65,8 +62,13 @@ var App = React.createClass({
 
                         <SearchBar
                             id="search-all"
-                            fields={searchableFieldNames}
                             placeholder="all fields"
+                            />
+
+                        <SearchBar
+                            id="search-age"
+                            fieldNames={['age']}
+                            placeholder="age"
                             />
 
                         <FilterPanel>

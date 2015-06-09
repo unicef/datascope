@@ -78,11 +78,21 @@ var SimpleDataTable = React.createClass({
         // order for the sort ('ascending' or 'descending')
         sortOrder: React.PropTypes.string,
         // callback to call when user changes sort, passed implicitly by Datascope
-        onChangeSort: React.PropTypes.func
+        onChangeSort: React.PropTypes.func,
+        // content to show in the table if there is no data
+        // if null, table will hide on no data
+        emptyContent: PropTypes.node,
+        // if true, puts emptyContent inside the tbody, otherwise shown instead of the table
+        isEmptyContentInTable: PropTypes.bool
     },
     getDefaultProps() {
         return {
-            sortable: true
+            sortable: true,
+            emptyContent:
+                <div className="ds-data-table-empty">
+                    No results found
+                </div>,
+            isEmptyContentInTable: false
         }
     },
 
@@ -100,6 +110,10 @@ var SimpleDataTable = React.createClass({
     },
 
     render() {
+        // if no data, and no "empty" message to show, hide table entirely
+        const hasData = (this.props.data && this.props.data.length);
+        if(!hasData && _.isNull(this.props.emptyContent)) return null;
+
         var children = this.props.children;
         children = _.isUndefined(children) ? [] : (_.isArray(children) ? children : [children]);
         var hasColumns = false;
@@ -115,16 +129,21 @@ var SimpleDataTable = React.createClass({
         );
 
         var renderRow = _.partial(this.renderRow, columns);
-        return <table className={cx(['ds-data-table', {'ds-data-table-sortable': this.props.sortable}])}>
-            <thead>
-                <tr>
-                    {React.Children.map(columns, this.renderColumnHeader)}
-                </tr>
-            </thead>
-            <tbody>
-                {this.props.data.map(renderRow)}
-            </tbody>
-        </table>
+        return (hasData || this.props.isEmptyContentInTable) ?
+            <table className={cx(['ds-data-table', {'ds-data-table-sortable': this.props.sortable}])}>
+                <thead>
+                    <tr>
+                        {React.Children.map(columns, this.renderColumnHeader)}
+                    </tr>
+                </thead>
+                <tbody>
+                    {hasData ?
+                        this.props.data.map(renderRow) :
+                        this.props.emptyContent
+                    }
+                </tbody>
+            </table> :
+            this.props.emptyContent;
     },
 
     renderColumnHeader(column) {

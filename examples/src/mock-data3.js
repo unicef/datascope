@@ -233,6 +233,9 @@ module.exports = {
                         on_table: true,
                         weightTable: 22
                     }
+                },
+                age: {
+                    type: "number"
                 }
             }
         }
@@ -250,7 +253,8 @@ module.exports = {
             last_login: "2014-10-29 18:36:49.051148+00:00",
             password: "",
             email: "",
-            date_joined: "2014-10-29 18:36:49.051229+00:00"
+            date_joined: "2014-10-29 18:36:49.051229+00:00",
+            age: 999
         },
         {
             username: "ben",
@@ -263,7 +267,8 @@ module.exports = {
             last_login: "2015-01-12 18:02:03+00:00",
             password: "pbkdf2_sha256$12000$5Y62qZ9hYOg6$uo+blPbl6lLVrhrHwHgGQYFLmoCFk/zJM+hgP5p1Xgg=",
             email: "lacker@seedscientific.com",
-            date_joined: "2015-01-12 18:02:03+00:00"
+            date_joined: "2015-01-12 18:02:03+00:00",
+            age: 99
         },
         {
             username: "odk",
@@ -276,7 +281,8 @@ module.exports = {
             last_login: "2014-12-01 15:28:12+00:00",
             password: "pbkdf2_sha256$12000$ecBlwKl8ZYeo$aUmSf9g12y1zx//GpZStV/QoKBCTP6GyiaxJQQb9Lcs=",
             email: "",
-            date_joined: "2014-12-01 15:28:12+00:00"
+            date_joined: "2014-12-01 15:28:12+00:00",
+            age: 42
         },
         {
             username: "unicef_demo",
@@ -289,7 +295,8 @@ module.exports = {
             last_login: "2015-02-02 19:29:15+00:00",
             password: "pbkdf2_sha256$12000$eXeghFlrvnSo$kWdDpJkTjom0GJq4dFutxzvovynhoDLTO8bMnRrznqU=",
             email: "",
-            date_joined: "2015-02-02 19:29:15+00:00"
+            date_joined: "2015-02-02 19:29:15+00:00",
+            age: 47
         },
         {
             username: "elliot",
@@ -302,7 +309,8 @@ module.exports = {
             last_login: "2015-02-26 17:59:04.575143+00:00",
             password: "pbkdf2_sha256$12000$OchTXelh7MIa$D3dhhACUG/kePt0fS8DVjTKm+WSV3D1b06ZvWcBKqO8=",
             email: "",
-            date_joined: "2015-02-10 22:14:58+00:00"
+            date_joined: "2015-02-10 22:14:58+00:00",
+            age: 21
         },
         {
             username: "sarah",
@@ -315,7 +323,8 @@ module.exports = {
             last_login: "2015-02-25 18:36:02.856379+00:00",
             password: "pbkdf2_sha256$12000$talVuAWvRCDX$XrYnmXINZii12mIk1teebGMJ98aN5MIWOriaSVCiIpQ=",
             email: "",
-            date_joined: "2014-11-03 20:16:13+00:00"
+            date_joined: "2014-11-03 20:16:13+00:00",
+            age: 21
         },
         {
             username: "Stephane",
@@ -328,7 +337,8 @@ module.exports = {
             last_login: "2015-04-08 14:47:33.243192+00:00",
             password: "pbkdf2_sha256$12000$9QXVZbwGE41s$FtoUqm/cCYpmPMRErel5NI2GidkyKzglh/1BKYzXAmg=",
             email: "sv@novel-t.ch",
-            date_joined: "2015-04-03 14:03:31+00:00"
+            date_joined: "2015-04-03 14:03:31+00:00",
+            age: 21
         },
         {
             username: "bret",
@@ -341,7 +351,8 @@ module.exports = {
             last_login: "2015-04-13 14:49:39+00:00",
             password: "pbkdf2_sha256$12000$18vij2sKIB68$eg7ZuAXJxd9Efni8qByg1WF+VvSRfizjhRb13UHNK4E=",
             email: "bret@seedscientific.com",
-            date_joined: "2015-04-13 14:30:32+00:00"
+            date_joined: "2015-04-13 14:30:32+00:00",
+            age: 21
         },
         {
             username: "xiaodong",
@@ -354,7 +365,8 @@ module.exports = {
             last_login: "2015-04-13 14:26:53+00:00",
             password: "pbkdf2_sha256$12000$YVcOjZHaQSgp$F8yiD6mlVtAgrhJyX/SXRCzKWJ2xgB7/N+ezLFcCgno=",
             email: "xcai@unicef.org",
-            date_joined: "2015-02-27 16:27:15+00:00"
+            date_joined: "2015-02-27 16:27:15+00:00",
+            age: 21
         },
         {
             username: "user_dash1",
@@ -367,7 +379,8 @@ module.exports = {
             last_login: "2015-04-10 17:18:15.771096+00:00",
             password: "pbkdf2_sha256$12000$ERVBYxuCYqGU$w2PnF+qekRCCamqDPN7lCyV+v36oN9CFy0ZBGxfsLyw=",
             email: "",
-            date_joined: "2015-03-31 21:33:55+00:00"
+            date_joined: "2015-03-31 21:33:55+00:00",
+            age: 21
         },
         {
             username: "sherine",
@@ -380,7 +393,8 @@ module.exports = {
             last_login: "2015-02-27 20:58:12.611538+00:00",
             password: "pbkdf2_sha256$12000$XUeKiRiCxp7X$Mg5uOigSxzOBuWkxC6T+qr5MTs461REHKBSO3iaYJpE=",
             email: "sguirguis@unicef.org",
-            date_joined: "2015-02-27 16:35:49+00:00"
+            date_joined: "2015-02-27 16:35:49+00:00",
+            age: 21
         },
         {
             username: "bo",
@@ -393,7 +407,8 @@ module.exports = {
             last_login: "2015-02-27 21:12:36.447406+00:00",
             password: "pbkdf2_sha256$12000$0oBvG1Gc42VB$EoYCx8ME1WnuW29SYJRRuf3TRN6tOaxAO923vRiIpn0=",
             email: "",
-            date_joined: "2014-10-29 18:54:15+00:00"
+            date_joined: "2014-10-29 18:54:15+00:00",
+            age: 21
         },
         {
             username: "Philippe",
@@ -406,7 +421,8 @@ module.exports = {
             last_login: "2015-04-05 16:59:35.813237+00:00",
             password: "pbkdf2_sha256$12000$3pLymYEalgOu$qmKtuu0CaPcqdWV/DFyEmZ2pekcsD/enDnpu9WzsL5M=",
             email: "pv@novel-t.ch",
-            date_joined: "2015-04-03 20:55:45+00:00"
+            date_joined: "2015-04-03 20:55:45+00:00",
+            age: 21
         },
         {
             username: "asch",
@@ -419,7 +435,8 @@ module.exports = {
             last_login: "2015-04-10 17:42:38.154422+00:00",
             password: "pbkdf2_sha256$12000$xZgstAOPtNey$/zF3B/3xrbuwX1QDODsiRRmHMrPJkNSm/cVR+KzltSs=",
             email: "aharwood@unicef.org",
-            date_joined: "2015-02-27 16:32:38+00:00"
+            date_joined: "2015-02-27 16:32:38+00:00",
+            age: 21
         },
         {
             username: "manish",
@@ -432,7 +449,8 @@ module.exports = {
             last_login: "2015-04-10 18:57:03.213772+00:00",
             password: "pbkdf2_sha256$12000$mLIsZAIxs2Rp$kX8vFKPMZaOvMNVbssK8jVOV/3SHlhcsEgmnt8asKg4=",
             email: "nag@seedscientific.com",
-            date_joined: "2015-03-23 16:16:57+00:00"
+            date_joined: "2015-03-23 16:16:57+00:00",
+            age: 21
         },
         {
             username: "edward",
@@ -445,7 +463,8 @@ module.exports = {
             last_login: "2015-04-06 19:37:58.876277+00:00",
             password: "pbkdf2_sha256$12000$4Za6AwJyaqmM$NHubaCrih6V4nnQioAegdyMz6ZnhG8Et08mSnNOEl9I=",
             email: "",
-            date_joined: "2015-03-12 19:43:25+00:00"
+            date_joined: "2015-03-12 19:43:25+00:00",
+            age: 21
         },
         {
             username: "Vera",
@@ -458,7 +477,8 @@ module.exports = {
             last_login: "2015-04-03 18:14:59.254212+00:00",
             password: "pbkdf2_sha256$12000$sWBS8Y8THpL6$hhkQJIXOv7Um7bY2zZaD9h8YBQ+r1XS6YP5GggWqe60=",
             email: "savcic@seedscientific.com",
-            date_joined: "2015-04-02 20:36:51+00:00"
+            date_joined: "2015-04-02 20:36:51+00:00",
+            age: 21
         },
         {
             username: "Seaman",
@@ -471,7 +491,8 @@ module.exports = {
             last_login: "2015-04-06 19:40:18.648544+00:00",
             password: "pbkdf2_sha256$12000$ACHnslZiRslw$YSNKnruuxU43xodwphytsVCAt6fnwxFkM0yUffeu040=",
             email: "Vincent.Seaman@gatesfoundation.org",
-            date_joined: "2015-04-03 21:00:57+00:00"
+            date_joined: "2015-04-03 21:00:57+00:00",
+            age: 21
         },
         {
             username: "noah",
@@ -484,7 +505,8 @@ module.exports = {
             last_login: "2015-03-26 14:34:04.437817+00:00",
             password: "pbkdf2_sha256$12000$VTt8QvZBDu78$s+kkzwk1xgMYm8/z4NhEmclSpg4JyAlOZCsJs9v9sPU=",
             email: "",
-            date_joined: "2015-03-23 13:52:09+00:00"
+            date_joined: "2015-03-23 13:52:09+00:00",
+            age: 21
         },
         {
             username: "ojeba",
@@ -497,7 +519,8 @@ module.exports = {
             last_login: "2015-04-07 20:44:08.304367+00:00",
             password: "pbkdf2_sha256$12000$XvAaiPLgoSAL$m8HaekRqHAJcCD9dFMunmpROFvgC5GLporCjVPIe5Ps=",
             email: "ogbolu@seedscientific.com",
-            date_joined: "2015-02-25 16:02:26+00:00"
+            date_joined: "2015-02-25 16:02:26+00:00",
+            age: 21
         },
         {
             username: "Chenoweth",
@@ -510,7 +533,8 @@ module.exports = {
             last_login: "2015-04-13 14:48:39.532181+00:00",
             password: "pbkdf2_sha256$12000$GPO3v7RRSAKI$FoV8BluOO2e/6tlHTZawjHbrL4f1EenQf3hD6h+U7+M=",
             email: "chenowethp@who.int",
-            date_joined: "2015-04-13 14:35:25+00:00"
+            date_joined: "2015-04-13 14:35:25+00:00",
+            age: 21
         },
         {
             username: "vincent",
@@ -523,7 +547,8 @@ module.exports = {
             last_login: "2015-04-07 21:10:33.543895+00:00",
             password: "pbkdf2_sha256$12000$06umJDg5fY6C$OzO3RGPm7Koyv3O/KPxSmHnq8pq7BpxKxdxQ2NaQel8=",
             email: "vpetit@unicef.org",
-            date_joined: "2015-02-27 16:31:30+00:00"
+            date_joined: "2015-02-27 16:31:30+00:00",
+            age: 21
         },
         {
             username: "john",
@@ -536,7 +561,8 @@ module.exports = {
             last_login: "2015-04-23 18:12:28.372189+00:00",
             password: "pbkdf2_sha256$12000$Rs9EXYU0yypm$vXBumLxL5YGbPX0GuEMtY8LPF500UyxjCQgHLRvERfs=",
             email: "dingee@seedscientific.com",
-            date_joined: "2014-10-29 18:35:31.679657+00:00"
+            date_joined: "2014-10-29 18:35:31.679657+00:00",
+            age: 21
         },
         {
             username: "evan",
@@ -549,7 +575,8 @@ module.exports = {
             last_login: "2015-05-07 20:52:01.488463+00:00",
             password: "pbkdf2_sha256$12000$mIKulUdMwapl$p6gXq2sWkqxuq9CvBhKQZI5iKt/SY88fc5OziCo/o/Y=",
             email: "",
-            date_joined: "2014-10-29 18:54:49.917383+00:00"
+            date_joined: "2014-10-29 18:54:49.917383+00:00",
+            age: 21
         }
     ]
 };
