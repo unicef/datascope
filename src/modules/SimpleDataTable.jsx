@@ -16,7 +16,7 @@ var SimpleDataTableCell = React.createClass({
     },
     render() {
         var field = this.props.field;
-        return <td>
+        return <td className="ds-data-table-cell">
             {field.renderer(this.props.row[field.key], field, {moment, numeral})}
         </td>
     }
@@ -51,9 +51,9 @@ var TableHeaderCell = React.createClass({
             (isSortAscending ? this.props.sortIndicatorAscending : this.props.sortIndicatorDescending)
             : '';
 
-        return <th onClick={this.props.onClick}>
-            {this._getTitle()}
-            {sortIndicator}
+        return <th className="ds-data-table-col-head" onClick={this.props.onClick}>
+            <span className="ds-data-table-col-title">{this._getTitle()}</span>
+            <span className="ds-data-table-sort-indicator">{sortIndicator}</span>
         </th>
     }
 });

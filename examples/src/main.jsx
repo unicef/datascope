@@ -5,10 +5,8 @@ require('./../styles/fixed-data-table.css');
 //require('./../styles/core.css');
 //require('./../styles/react-widgets.css');
 
-
 var _ = require('lodash'),
     React = require('react/addons');
-
 
 var {
     Datascope, LocalDatascope,
