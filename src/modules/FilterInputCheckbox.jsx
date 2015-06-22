@@ -77,8 +77,8 @@ var FilterInputCheckbox = React.createClass({
         const selectedValues = this._getSelectedValues();
         const schema = this.props.schema;
 
-        return <div>
-            <div>{this._getTitle()}</div>
+        return <div className="ds-checkbox-filter">
+            <div className="ds-checkbox-filter-title">{this._getTitle()}</div>
             {values.map((listValue, i) => {
                 const hasLabelValue = _.has(listValue, 'label') && _.has(listValue, 'label');
                 let {label, value} = hasLabelValue ? listValue : {label: listValue, value: listValue};
