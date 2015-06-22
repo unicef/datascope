@@ -103,16 +103,15 @@ const FilterInputRadio = React.createClass({
                     var label = (_.has(value, 'label') ? value.label : value) + '';
                     value = (_.has(value, 'value') ? value.value : value);
                     return (
-                        <label>
                             <input
                                 className="ds-radio-input"
                                 type="radio"
                                 value={value}
                                 >
+                                <span className="ds-radio-input-label">
+                                    {label}
+                                </span>
                             </input>
-                            {label}
-                        </label>
-
                     )
                 })}
             </RadioGroup>
