@@ -75,12 +75,17 @@ var FilterInputCheckbox = React.createClass({
         const name = this._getName();
         const values = this._getValues();
         const selectedValues = this._getSelectedValues();
+        const schema = this.props.schema;
 
         return <div>
             <div>{this._getTitle()}</div>
-            {values.map(listValue => {
+            {values.map((listValue, i) => {
                 const hasLabelValue = _.has(listValue, 'label') && _.has(listValue, 'label');
-                const {label, value} = hasLabelValue ? listValue : {label: listValue, value: listValue};
+                let {label, value} = hasLabelValue ? listValue : {label: listValue, value: listValue};
+
+                if(!hasLabelValue && schema && schema.oneOf && schema.oneOf[i])
+                    label = schema.oneOf[i].title || label;
+
                 const isSelected = _.indexOf(selectedValues, value) > -1;
                 return <label>
                     <input type="checkbox"
