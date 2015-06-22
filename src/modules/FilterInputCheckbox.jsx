@@ -42,10 +42,11 @@ var FilterInputCheckbox = React.createClass({
             _.isObject(this.props.schema) && _.has(this.props.schema, 'name') ?
                 this.props.schema.name : null;
     },
-    _getLabel() {
-        return _.isString(this.props.label) ? this.props.label :
-            _.isObject(this.props.schema) && _.has(this.props.schema, 'label') ?
-                this.props.schema.title : this._getName();
+    _getTitle() {
+        // todo if neither exist, use schema key (pass from parent as another prop?)
+        return _.isString(this.props.title) ? this.props.title :
+            _.isObject(this.props.schema) && _.has(this.props.schema, 'title') ?
+                this.props.schema.title : this.props.name;
     },
     _getValues() {
         const schema = this.props.schema;
@@ -76,7 +77,7 @@ var FilterInputCheckbox = React.createClass({
         const selectedValues = this._getSelectedValues();
 
         return <div>
-            <div>{this._getLabel()}</div>
+            <div>{this._getTitle()}</div>
             {values.map(listValue => {
                 const hasLabelValue = _.has(listValue, 'label') && _.has(listValue, 'label');
                 const {label, value} = hasLabelValue ? listValue : {label: listValue, value: listValue};
