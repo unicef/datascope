@@ -67,7 +67,7 @@ var FilterInputCheckbox = React.createClass({
         const valueIndex = _.indexOf(selectedValues, value);
         valueIndex > -1 ? selectedValues.splice(valueIndex, 1) : selectedValues.push(value);
         const newFilter = selectedValues.length ? {intersects: selectedValues} : null;
-        this.props.onChange(this._getName(), newFilter);
+        this.props.onChange(newFilter);
     },
 
     render() {
