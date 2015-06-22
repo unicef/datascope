@@ -28,20 +28,31 @@ var FilterPanel = React.createClass({
         const propSchemas = this.props.schema.items.properties;
         return (
             <div className="datascope-filter-panel">
-                {React.Children.map(this.props.children, child => {
-                    const childKey = child.props.name;
-                    if(_.isUndefined(childKey)) throw "children of FilterPanel must have name";
-
-                    var propsToPass = {
-                        schema: propSchemas[childKey],
-                        filter: this.props.filter[childKey],
-                        onChange: this.onChangeFilterInput.bind(this, childKey)
-                    };
-
-                    return React.cloneElement(child, propsToPass);
-                })}
+                {this.recursiveCloneChildren(this.props.children)}
             </div>
         );
+    },
+    recursiveCloneChildren(children) {
+        return React.Children.map(children, child => {
+            if(!_.isObject(child)) return child;
+
+            let childProps = {};
+            const isFilter = child.props && child.props.name;
+            if(isFilter) {
+                const childKey = child.props.name;
+                const propSchemas = this.props.schema.items.properties;
+                childProps = {
+                    schema: propSchemas[childKey],
+                    filter: this.props.filter[childKey],
+                    onChange: this.onChangeFilterInput.bind(this, childKey)
+                };
+            }
+
+            if(child.props.children)
+                childProps.children = this.recursiveCloneChildren(child.props.children);
+
+            return React.cloneElement(child, childProps);
+        })
     }
 });
 
