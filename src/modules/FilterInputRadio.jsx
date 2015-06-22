@@ -57,9 +57,10 @@ const FilterInputRadio = React.createClass({
         if(!this.props.name) throw "FilterInputRadio requires a `name` prop";
         if(_.isNull(this._getValues())) throw "FilterInputRadio requires valid schema or `values` prop";
     },
-    _getLabel() {
-        return _.isString(this.props.label) ? this.props.label :
-            _.isObject(this.props.schema) && _.has(this.props.schema, 'label') ?
+    _getTitle() {
+        // todo if neither exist, use schema key (pass from parent as another prop?)
+        return _.isString(this.props.title) ? this.props.title :
+            _.isObject(this.props.schema) && _.has(this.props.schema, 'title') ?
                 this.props.schema.title : this.props.name;
     },
     _getValues() {
@@ -88,7 +89,7 @@ const FilterInputRadio = React.createClass({
 
         return <div className="ds-radio-filter">
             <div className="ds-radio-filter-title">
-                {this._getLabel()}
+                {this._getTitle()}
             </div>
 
             <RadioGroup
