@@ -187,17 +187,18 @@ function initFields(definedFields, schema) {
 
 function fieldsFromSchema(schema) {
     if(!schema || !schema.items || !schema.items.properties) return [];
+
     return _(schema.items.properties).map((propSchema, key) => {
         return [key, {
             title: propSchema.title || key,
             key: key,
             name: key,
             renderer:
+                (propSchema.oneOf && _.every(propSchema.oneOf, s => s.title && s.enum && s.enum.length == 1)) ?
+                    fieldDefaults.renderers.oneOf :
                 (propSchema.type && propSchema.type in fieldDefaults.renderers) ?
                     fieldDefaults.renderers[propSchema.type]
-                : (propSchema.oneOf && _.every(propSchema.oneOf, s => s.title && s.enum && s.enum.length == 1)) ?
-                    fieldDefaults.renderers.oneOf
-                : v => v+''
+                    : v => v+''
         }]
     }).object().value();
 }
