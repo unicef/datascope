@@ -165,7 +165,6 @@ function initFields(definedFields, schema) {
         // fill in unknown (implicit) parts of defined fields
         var fieldSchema = schema.items.properties[fieldKey];
         var fieldProps = _.pick(definedField, ['title', 'weight', 'renderer', 'format']);
-        fieldProps.schema = fieldSchema;
         fieldProps.name = fieldName;
         fieldProps.key = fieldKey;
         if(fieldProps.format && !fieldProps.renderer) {
@@ -193,6 +192,7 @@ function fieldsFromSchema(schema) {
             title: propSchema.title || key,
             key: key,
             name: key,
+            schema: propSchema,
             renderer:
                 (propSchema.oneOf && _.every(propSchema.oneOf, s => s.title && s.enum && s.enum.length == 1)) ?
                     fieldDefaults.renderers.oneOf :
