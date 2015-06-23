@@ -146,7 +146,11 @@ var fieldDefaults = {
         boolean: function defaultBooleanRenderer(v) { return v+''; },
         number: function defaultNumberRenderer(v) { return v+''; },
         null: function defaultNullRenderer(v) { return v+''; },
-        array: function defaultArrayRenderer(v) { return v && v.length ? v.join(', ') : v+''; }
+        array: function defaultArrayRenderer(v) { return v && v.length ? v.join(', ') : v+''; },
+        oneOf: function defaultOneOfRenderer(v, field, {moment, numeral}) {
+            const valueSchema = _.find(field.schema.oneOf, s => s.enum[0] === v);
+            return valueSchema ? valueSchema.title || v+'' : v+'';
+        }
     }
 };
 
@@ -161,6 +165,7 @@ function initFields(definedFields, schema) {
         // fill in unknown (implicit) parts of defined fields
         var fieldSchema = schema.items.properties[fieldKey];
         var fieldProps = _.pick(definedField, ['title', 'weight', 'renderer', 'format']);
+        fieldProps.schema = fieldSchema;
         fieldProps.name = fieldName;
         fieldProps.key = fieldKey;
         if(fieldProps.format && !fieldProps.renderer) {
@@ -187,8 +192,12 @@ function fieldsFromSchema(schema) {
             title: propSchema.title || key,
             key: key,
             name: key,
-            renderer: (propSchema.type && propSchema.type in fieldDefaults.renderers) ?
-                fieldDefaults.renderers[propSchema.type] : v => v+''
+            renderer:
+                (propSchema.type && propSchema.type in fieldDefaults.renderers) ?
+                    fieldDefaults.renderers[propSchema.type]
+                : (propSchema.oneOf && _.every(propSchema.oneOf, s => s.title && s.enum && s.enum.length == 1)) ?
+                    fieldDefaults.renderers.oneOf
+                : v => v+''
         }]
     }).object().value();
 }
