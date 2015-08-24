@@ -52,7 +52,7 @@ var FilterInputCheckbox = React.createClass({
         const schema = this.props.schema;
         return _.isArray(this.props.values) ? this.props.values : // use values if passed
             schema && schema.type === 'boolean' ? [true, false] : // if type boolean, values are true/false
-            schema && schema.enum ? schema.type.enum : // enumerated values
+            schema && schema.enum ? schema.enum : // enumerated values
             schema && schema.oneOf && // another way of enumerating values, which puts the labels in the schema instead
                 _.every(schema.oneOf, s => _.has(s, 'enum') && s.enum.length == 1) ?
                     schema.oneOf.map(aSchema => aSchema.enum[0]) : // todo: deal with labels for this type
