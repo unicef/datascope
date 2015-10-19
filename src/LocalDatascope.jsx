@@ -33,6 +33,11 @@ var LocalDatascope = React.createClass({
         this.setState(this._getDisplayData(query));
     },
 
+    componentWillReceiveProps(nextProps) {
+      this.props = nextProps;
+      this.setState(this._getDisplayData(this.state.query));
+    },
+
     _getDisplayData(query) {
         const hasFilter = _.isObject(query.filter) && _.keys(query.filter).length;
         const hasSearch = _.isObject(query.search) && _.keys(query.search).length;
