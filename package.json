@@ -2,7 +2,7 @@
   "name": "react-datascope",
   "description": "Datascope component for filtering, searching and sorting data",
   "author": "Dan Delany <dan.delany@gmail.com>",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/SeedScientific/react-datascope.git"
